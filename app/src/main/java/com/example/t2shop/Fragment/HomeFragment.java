@@ -4,26 +4,47 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.t2shop.Adapter.BannerAdapter;
+import com.example.t2shop.Adapter.NewProductAdapter;
 import com.example.t2shop.Common.Common;
+import com.example.t2shop.Common.Constants;
 import com.example.t2shop.Model.Banner;
+import com.example.t2shop.Model.DataProduct;
 import com.example.t2shop.R;
 import com.example.t2shop.Retrofit.IT2ShopAPI;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import java.util.ArrayList;
 
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -40,11 +61,14 @@ public class HomeFragment extends Fragment {
     Handler handler;
     Runnable runnable;
     private int currentItem;
-    RecyclerView recy_Quick_Link_1, recy_Quick_Link_2, recy_sale;
     SwipeRefreshLayout refresh_home;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private AppBarLayout appBarLayout;
     Thread t1;
     private ArrayList<Bitmap> arrBmBanners = new ArrayList<>();
-
+    private RecyclerView rv_new_product;
+    private EditText edt_search;
+    private LinearLayout ln_search;
     @Override
     public void onStop() {
         compositeDisposable.clear();
@@ -73,40 +97,95 @@ public class HomeFragment extends Fragment {
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         );
         view = inflater.inflate(R.layout.fragment_home, container, false);
+        Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         //Init
         it2ShopAPI = Common.getAPI();
         viewPager = view.findViewById(R.id.myViewPagerBanner);
         circleIndicator = view.findViewById(R.id.indicator_banner);
-        recy_Quick_Link_1 = view.findViewById(R.id.recy_quick_link_1);
-        recy_Quick_Link_2 = view.findViewById(R.id.recy_quick_link_2);
-        recy_sale = view.findViewById(R.id.recy_sale);
-        refresh_home = view.findViewById(R.id.refresh_home);
-        refresh_home.setColorSchemeResources(R.color.black,
-                android.R.color.holo_green_dark,
-                android.R.color.holo_blue_light,
-                android.R.color.holo_orange_dark);
-        refresh_home.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        rv_new_product = view.findViewById(R.id.rv_new_product);
+        collapsingToolbarLayout = view.findViewById(R.id.collapsingToolbarLayout);
+        appBarLayout = view.findViewById(R.id.appBarLayout);
+        edt_search = view.findViewById(R.id.edt_search);
+        ln_search = view.findViewById(R.id.ln_search);
+
+        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = true;
+            int scrollRange = -1;
             @Override
-            public void onRefresh() {
-                if(Common.isConnectedToInternet(getContext())){
-                    fetchBanner();
-                }else{
-                    Toast.makeText(getContext(), "Cannot connect to INTERNET", Toast.LENGTH_SHORT).show();
+            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+                if (scrollRange == -1) {
+                    scrollRange = appBarLayout.getTotalScrollRange();
+                }
+                int o = scrollRange + verticalOffset;
+                ViewGroup.LayoutParams params = ln_search.getLayoutParams();
+                if (o>=0&&o<100){
+                    params.width = 700*Constants.SCREEN_WIDTH/1080;
+                    ln_search.setLayoutParams(params);
+                }else if (o>=100&&o<110){
+                    params.width = 750*Constants.SCREEN_WIDTH/1080;
+                    ln_search.setLayoutParams(params);
+                }else if (o>=110&&o<120){
+                    params.width = 800*Constants.SCREEN_WIDTH/1080;
+                    ln_search.setLayoutParams(params);
+                }
+                else if (o>=120&&o<130){
+                    params.width = 850*Constants.SCREEN_WIDTH/1080;
+                    ln_search.setLayoutParams(params);
+                }
+                else if (o>=130&&o<140){
+                    params.width = 900*Constants.SCREEN_WIDTH/1080;
+                    ln_search.setLayoutParams(params);
+                }
+                else if (o>=140&&o<=150){
+                    params.width = 950*Constants.SCREEN_WIDTH/1080;
+                    ln_search.setLayoutParams(params);
                 }
             }
         });
-        refresh_home.post(new Runnable() {
-            @Override
-            public void run() {
-                if(Common.isConnectedToInternet(getContext())){
-                    fetchBanner();
-                }else{
-                    Toast.makeText(getContext(), "Cannot connect to INTERNET", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+//        refresh_home = view.findViewById(R.id.refresh_home);
+//        refresh_home.setColorSchemeResources(R.color.black,
+//                android.R.color.holo_green_dark,
+//                android.R.color.holo_blue_light,
+//                android.R.color.holo_orange_dark);
+        fetchBanner();
+        fetchFeatured();
+//        refresh_home.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                if(Common.isConnectedToInternet(getContext())){
+////                    fetchFeatured();
+//                }else{
+//                    Toast.makeText(getContext(), "Cannot connect to INTERNET", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
         return view;
     }
+
+    private void fetchFeatured() {
+        compositeDisposable.add(it2ShopAPI.getDataProduct()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Consumer<DataProduct>() {
+            @Override
+            public void accept(DataProduct dataProduct) throws Exception {
+                NewProductAdapter newProductAdapter = new NewProductAdapter(getContext(), dataProduct.getData());
+                rv_new_product.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                rv_new_product.setAdapter(newProductAdapter);
+                refresh_home.setRefreshing(false);
+                if (dataProduct.getData().size()!=0){
+                    Toast.makeText(getContext(), ""+dataProduct.getData().get(0).getProduct_img(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                Toast.makeText(getContext(), "Lỗi tải sản phẩm mới nhất" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }));
+    }
+
 
     private void fetchBanner() {
         ArrayList<Banner> banners = new ArrayList<>();
@@ -134,9 +213,29 @@ public class HomeFragment extends Fragment {
                     currentItem = 0;
                 }
                 viewPager.setCurrentItem(currentItem, true);
-                handler.postDelayed(runnable, 2000);
+                handler.postDelayed(runnable, 3500);
             }
         };
-        handler.postDelayed(runnable, 2000);
+        handler.postDelayed(runnable, 3500);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.home_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.serch_icon);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint("Tim kiem o day");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }

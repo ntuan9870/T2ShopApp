@@ -7,8 +7,10 @@ import androidx.viewpager.widget.ViewPager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 
 import com.example.t2shop.Adapter.MainViewPagerAdapter;
+import com.example.t2shop.Common.Constants;
 import com.example.t2shop.Fragment.CategoryFragment;
 import com.example.t2shop.Fragment.HomeFragment;
 import com.example.t2shop.Fragment.NotificationFragment;
@@ -24,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DisplayMetrics dm = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        Constants.SCREEN_WIDTH = dm.widthPixels;
+        Constants.SCREEN_HEIGHT = dm.heightPixels;
         setContentView(R.layout.activity_main);
         AnhXa();
         init();

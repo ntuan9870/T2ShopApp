@@ -1,7 +1,9 @@
 package com.example.t2shop.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.Rating;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,9 +12,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.t2shop.Fragment.DetailProductFragment;
 import com.example.t2shop.Model.Product;
 import com.example.t2shop.Model.Promotion;
 import com.example.t2shop.R;
@@ -42,8 +47,8 @@ public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Product p = arrProducts.get(position);
-        Promotion promotion = arrPromotions.get(position);
+        final Product p = arrProducts.get(position);
+        final Promotion promotion = arrPromotions.get(position);
         Glide.with(context).load(p.getProduct_img()).into(holder.img_home_product);
         holder.txt_name_home_product.setText(p.getProduct_name() + " là " + p.getProduct_description());
         DecimalFormat formatter = new DecimalFormat("###,###,###");
@@ -54,6 +59,21 @@ public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.
         holder.txt_name_home_product.setText(p.getProduct_name() + " là " + dsc);
         holder.txt_promotion_home_product.setText("- " + promotion.getPromotion_infor() +"%");
         holder.rating_home_product.setRating(Integer.parseInt(arrRatings.get(position)));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("product", p);
+                bundle.putSerializable("promotion", promotion);
+                FragmentTransaction transaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+                DetailProductFragment detailProductFragment = new DetailProductFragment();
+                detailProductFragment.setArguments(bundle);
+                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                transaction.replace(R.id.main_frame, detailProductFragment);
+                transaction.addToBackStack(DetailProductFragment.TAG);
+                transaction.commit();
+            }
+        });
     }
 
     @Override

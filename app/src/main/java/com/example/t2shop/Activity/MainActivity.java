@@ -1,4 +1,4 @@
-package com.example.t2shop;
+package com.example.t2shop.Activity;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +16,7 @@ import com.example.t2shop.Fragment.HomeFragment;
 import com.example.t2shop.Fragment.NotificationFragment;
 import com.example.t2shop.Fragment.PersonalFragment;
 import com.example.t2shop.Fragment.SearchFragment;
+import com.example.t2shop.R;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {

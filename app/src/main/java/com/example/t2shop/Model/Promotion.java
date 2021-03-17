@@ -1,6 +1,8 @@
 package com.example.t2shop.Model;
 
-public class Promotion {
+import java.io.Serializable;
+
+public class Promotion implements Serializable {
     private int promotion_id;
     private String promotion_name;
     private String start_date;

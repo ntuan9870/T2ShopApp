@@ -1,5 +1,6 @@
 package com.example.t2shop.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.media.Rating;
 import android.view.LayoutInflater;
@@ -10,9 +11,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.t2shop.Fragment.DetailProductFragment;
 import com.example.t2shop.Model.Product;
 import com.example.t2shop.Model.Promotion;
 import com.example.t2shop.R;
@@ -54,6 +58,14 @@ public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.
         holder.txt_name_home_product.setText(p.getProduct_name() + " là " + dsc);
         holder.txt_promotion_home_product.setText("- " + promotion.getPromotion_infor() +"%");
         holder.rating_home_product.setRating(Integer.parseInt(arrRatings.get(position)));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.main_frame, new DetailProductFragment());
+                transaction.commit();
+            }
+        });
     }
 
     @Override

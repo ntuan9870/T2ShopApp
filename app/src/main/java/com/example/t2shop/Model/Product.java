@@ -1,6 +1,8 @@
 package com.example.t2shop.Model;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     private int product_id;
     private String product_name;
     private double product_price;

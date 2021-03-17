@@ -75,7 +75,8 @@
                     android:layout_marginLeft="20dp"
                     android:background="@drawable/bg_search"
                     android:orientation="horizontal"
-                    android:weightSum="10">
+                    android:weightSum="10"
+                    android:focusableInTouchMode="true">
                     <ImageView
                         android:layout_width="0dp"
                         android:layout_height="30dp"
@@ -95,76 +96,115 @@
                 </LinearLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>
-        <androidx.core.widget.NestedScrollView
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_home"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <RelativeLayout
+            <androidx.core.widget.NestedScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    android:background="@drawable/bg_home"  />
                 <RelativeLayout
-                    android:id="@+id/rl_banner"
                     android:layout_width="match_parent"
-                    android:layout_height="150dp">
-                    <ProgressBar
-                        android:id="@+id/progress_bar_banner"
-                        android:layout_centerInParent="true"
-                        android:layout_width="70dp"
-                        android:layout_height="70dp"
-                        style="?android:attr/progressBarStyle"
-                        android:indeterminateTint="#0002A5"/>
-                    <androidx.viewpager.widget.ViewPager
-                        android:layout_marginTop="20dp"
+                    android:layout_height="match_parent">
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="250dp"
-                        android:id="@+id/myViewPagerBanner" />
-                    <me.relex.circleindicator.CircleIndicator
-                        android:layout_width="wrap_content"
-                        android:layout_height="13dp"
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentBottom="true"
-                        android:id="@+id/indicator_banner"
-                        android:paddingBottom="5dp"/>
-                </RelativeLayout>
-                <LinearLayout
-                    android:id="@+id/rl_new_product"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_below="@+id/rl_banner"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:orientation="vertical">
+                        android:layout_height="150dp"
+                        android:background="@drawable/bg_home"  />
                     <RelativeLayout
+                        android:id="@+id/rl_banner"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:gravity="center">
-                        <TextView
+                        android:layout_height="150dp">
+                        <ProgressBar
+                            android:id="@+id/progress_bar_banner"
+                            android:layout_centerInParent="true"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            style="?android:attr/progressBarStyle"
+                            android:indeterminateTint="#0002A5"/>
+                        <androidx.viewpager.widget.ViewPager
+                            android:layout_marginTop="20dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="250dp"
+                            android:id="@+id/myViewPagerBanner" />
+                        <me.relex.circleindicator.CircleIndicator
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="20sp"
-                            android:textColor="#FF5722"
-                            android:text="Sản phẩm mới"
-                            android:textStyle="bold"/>
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="15sp"
-                            android:textColor="#002F6A"
-                            android:text="xem thêm>>"
-                            android:layout_alignParentRight="true"/>
+                            android:layout_height="13dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_alignParentBottom="true"
+                            android:id="@+id/indicator_banner"
+                            android:paddingBottom="5dp"/>
                     </RelativeLayout>
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_new_product"
+                    <LinearLayout
+                        android:id="@+id/ll_new_product"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-                    </androidx.recyclerview.widget.RecyclerView>
-                </LinearLayout>
-            </RelativeLayout>
-        </androidx.core.widget.NestedScrollView>
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/rl_banner"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:orientation="vertical">
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:textColor="#FF5722"
+                                android:text="Sản phẩm mới"
+                                android:textStyle="bold"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"
+                                android:textColor="#002F6A"
+                                android:text="xem thêm>>"
+                                android:layout_alignParentRight="true"/>
+                        </RelativeLayout>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_new_product"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/rl_featured_product"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/ll_new_product"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:orientation="vertical">
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:gravity="center">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="20sp"
+                                android:textColor="#FF5722"
+                                android:text="Sản phẩm nổi bật"
+                                android:textStyle="bold"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textSize="15sp"
+                                android:textColor="#002F6A"
+                                android:text="xem thêm>>"
+                                android:layout_alignParentRight="true"/>
+                        </RelativeLayout>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_featured_product"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                        </androidx.recyclerview.widget.RecyclerView>
+                    </LinearLayout>
+                </RelativeLayout>
+            </androidx.core.widget.NestedScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </RelativeLayout>

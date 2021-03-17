@@ -7,9 +7,7 @@ import retrofit2.http.GET;
 
 public interface IT2ShopAPI {
     @GET("getNewProduct")
-    Observable<DataProduct> getDataProduct();
-//    @GET("shopping/v2/widgets/quick_link")
-//    Observable<DataQuickLink> getDataQuickLink();
-//    @GET("v2/widget/deals/hot")
-//    Observable<Sale> getSale();
+    Observable<DataProduct> getNewProduct();
+    @GET("getFeaturedProduct")
+    Observable<DataProduct> getFeaturedProduct();
 }

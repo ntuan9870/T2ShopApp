@@ -5,19 +5,16 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,14 +22,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.t2shop.Adapter.BannerAdapter;
-import com.example.t2shop.Adapter.NewProductAdapter;
+import com.example.t2shop.Adapter.HomeProductAdapter;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Constants;
 import com.example.t2shop.Model.Banner;
@@ -44,7 +39,6 @@ import com.google.android.material.appbar.CollapsingToolbarLayout;
 
 import java.util.ArrayList;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -66,7 +60,7 @@ public class HomeFragment extends Fragment {
     private AppBarLayout appBarLayout;
     Thread t1;
     private ArrayList<Bitmap> arrBmBanners = new ArrayList<>();
-    private RecyclerView rv_new_product;
+    private RecyclerView rv_new_product, rv_featured_product;
     private EditText edt_search;
     private LinearLayout ln_search;
     @Override
@@ -104,6 +98,7 @@ public class HomeFragment extends Fragment {
         viewPager = view.findViewById(R.id.myViewPagerBanner);
         circleIndicator = view.findViewById(R.id.indicator_banner);
         rv_new_product = view.findViewById(R.id.rv_new_product);
+        rv_featured_product = view.findViewById(R.id.rv_featured_product);
         collapsingToolbarLayout = view.findViewById(R.id.collapsingToolbarLayout);
         appBarLayout = view.findViewById(R.id.appBarLayout);
         edt_search = view.findViewById(R.id.edt_search);
@@ -143,45 +138,61 @@ public class HomeFragment extends Fragment {
                 }
             }
         });
-//        refresh_home = view.findViewById(R.id.refresh_home);
-//        refresh_home.setColorSchemeResources(R.color.black,
-//                android.R.color.holo_green_dark,
-//                android.R.color.holo_blue_light,
-//                android.R.color.holo_orange_dark);
+        refresh_home = view.findViewById(R.id.refresh_home);
+        refresh_home.setColorSchemeResources(R.color.black,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_blue_light,
+                android.R.color.holo_orange_dark);
         fetchBanner();
+        fetchNewProduct();
         fetchFeatured();
-//        refresh_home.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                if(Common.isConnectedToInternet(getContext())){
-////                    fetchFeatured();
-//                }else{
-//                    Toast.makeText(getContext(), "Cannot connect to INTERNET", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
+        refresh_home.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(Common.isConnectedToInternet(getContext())){
+                    fetchNewProduct();
+                    fetchFeatured();
+                    refresh_home.setRefreshing(false);
+                }else{
+                    Toast.makeText(getContext(), "Vui lòng kết nối INTERNET và thử lại", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
         return view;
     }
 
     private void fetchFeatured() {
-        compositeDisposable.add(it2ShopAPI.getDataProduct()
+        compositeDisposable.add(it2ShopAPI.getFeaturedProduct()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<DataProduct>() {
+                    @Override
+                    public void accept(DataProduct dataProduct) throws Exception {
+                        HomeProductAdapter homeProductAdapter = new HomeProductAdapter(getContext(), dataProduct.getProducts(), dataProduct.getPromotions(), dataProduct.getRatings());
+                        rv_featured_product.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                        rv_featured_product.setAdapter(homeProductAdapter);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                    }
+                }));
+    }
+
+    private void fetchNewProduct() {
+        compositeDisposable.add(it2ShopAPI.getNewProduct()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Consumer<DataProduct>() {
             @Override
             public void accept(DataProduct dataProduct) throws Exception {
-                NewProductAdapter newProductAdapter = new NewProductAdapter(getContext(), dataProduct.getData());
+                HomeProductAdapter homeProductAdapter = new HomeProductAdapter(getContext(), dataProduct.getProducts(), dataProduct.getPromotions(), dataProduct.getRatings());
                 rv_new_product.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                rv_new_product.setAdapter(newProductAdapter);
-                refresh_home.setRefreshing(false);
-                if (dataProduct.getData().size()!=0){
-                    Toast.makeText(getContext(), ""+dataProduct.getData().get(0).getProduct_img(), Toast.LENGTH_SHORT).show();
-                }
+                rv_new_product.setAdapter(homeProductAdapter);
             }
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                Toast.makeText(getContext(), "Lỗi tải sản phẩm mới nhất" + throwable.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }));
     }

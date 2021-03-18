@@ -48,8 +48,6 @@ import me.relex.circleindicator.CircleIndicator;
 
 public class HomeFragment extends Fragment {
 
-    IT2ShopAPI it2ShopAPI;
-    CompositeDisposable compositeDisposable = new CompositeDisposable();
     ViewPager viewPager;
     CircleIndicator circleIndicator;
     Handler handler;
@@ -65,7 +63,7 @@ public class HomeFragment extends Fragment {
     private LinearLayout ln_search;
     @Override
     public void onStop() {
-        compositeDisposable.clear();
+        Common.compositeDisposable.clear();
         super.onStop();
     }
 
@@ -74,6 +72,8 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Common.compositeDisposable = new CompositeDisposable();
+
         arrBmBanners.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.banner1));
         arrBmBanners.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.banner2));
         arrBmBanners.add(BitmapFactory.decodeResource(this.getResources(), R.drawable.banner3));
@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment {
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         //Init
-        it2ShopAPI = Common.getAPI();
+        Common.it2ShopAPI = Common.getAPI();
         viewPager = view.findViewById(R.id.myViewPagerBanner);
         circleIndicator = view.findViewById(R.id.indicator_banner);
         rv_new_product = view.findViewById(R.id.rv_new_product);
@@ -162,7 +162,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchFeatured() {
-        compositeDisposable.add(it2ShopAPI.getFeaturedProduct()
+        Common.compositeDisposable.add(Common.it2ShopAPI.getFeaturedProduct()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<DataProduct>() {
@@ -180,7 +180,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchNewProduct() {
-        compositeDisposable.add(it2ShopAPI.getNewProduct()
+        Common.compositeDisposable.add(Common.it2ShopAPI.getNewProduct()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Consumer<DataProduct>() {

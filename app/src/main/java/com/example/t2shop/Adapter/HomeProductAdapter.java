@@ -23,7 +23,9 @@ import com.example.t2shop.Model.Promotion;
 import com.example.t2shop.R;
 
 import java.text.DecimalFormat;
+import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.ViewHolder> {
 
@@ -53,7 +55,9 @@ public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.
         holder.txt_name_home_product.setText(p.getProduct_name() + " là " + p.getProduct_description());
         DecimalFormat formatter = new DecimalFormat("###,###,###");
         String price = formatter.format(p.getProduct_price()-(p.getProduct_price()*Integer.parseInt(promotion.getPromotion_infor()))/100);
-        holder.txt_price_home_product.setText(price+" đ");
+        Currency currency = Currency.getInstance("VND");
+        String vnd = currency.getSymbol();
+        holder.txt_price_home_product.setText(price+" " + vnd);
         String dsc = p.getProduct_description().replace("<p>", "");
         dsc = dsc.replace("</p>", "");
         holder.txt_name_home_product.setText(p.getProduct_name() + " là " + dsc);
@@ -65,6 +69,7 @@ public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("product", p);
                 bundle.putSerializable("promotion", promotion);
+                bundle.putString("rating", arrRatings.get(position));
                 FragmentTransaction transaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
                 DetailProductFragment detailProductFragment = new DetailProductFragment();
                 detailProductFragment.setArguments(bundle);

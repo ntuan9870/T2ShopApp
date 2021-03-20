@@ -2,6 +2,7 @@ package com.example.t2shop.Activity;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Color;
@@ -11,6 +12,9 @@ import android.util.DisplayMetrics;
 
 import com.example.t2shop.Adapter.MainViewPagerAdapter;
 import com.example.t2shop.Common.Constants;
+import com.example.t2shop.Database.ItemCartDatabase;
+import com.example.t2shop.Database.ProductDatabase;
+import com.example.t2shop.Database.PromotionDatabase;
 import com.example.t2shop.Fragment.CategoryFragment;
 import com.example.t2shop.Fragment.HomeFragment;
 import com.example.t2shop.Fragment.NotificationFragment;

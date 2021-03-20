@@ -1,8 +1,14 @@
 package com.example.t2shop.Model;
 
-import java.io.Serializable;
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
+@Entity(tableName = "products")
 public class Product implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
     private int product_id;
     private String product_name;
     private double product_price;

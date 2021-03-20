@@ -537,10 +537,11 @@
             android:layout_margin="5dp"
             android:layout_gravity="center_vertical"/>
         <Button
+            android:id="@+id/btn_add_to_cart"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="6"
-            android:text="Chọn mua"
+            android:text="Thêm vào giỏ hàng"
             android:background="@drawable/bg_buy_button"
             android:textColor="@color/white"
             android:textSize="15sp"

@@ -1,8 +1,15 @@
 package com.example.t2shop.Model;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 
+@Entity(tableName = "promotions")
 public class Promotion implements Serializable {
+    @PrimaryKey(autoGenerate = true)
+    @NonNull
     private int promotion_id;
     private String promotion_name;
     private String start_date;

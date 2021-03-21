@@ -1,11 +1,21 @@
 package com.example.t2shop.Fragment;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.Patterns;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,6 +43,8 @@ public class LoginFragment extends Fragment {
     public static String TAG = LoginFragment.class.getName();
     private TextView edt_email, edt_password;
     private Button btn_login;
+    private LinearLayout rl_login;
+    private RelativeLayout rl_logo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,10 +54,87 @@ public class LoginFragment extends Fragment {
         edt_email = view.findViewById(R.id.edt_email);
         edt_password = view.findViewById(R.id.edt_password);
         btn_login = view.findViewById(R.id.btn_login);
+        rl_login = view.findViewById(R.id.rl_login);
+        rl_logo = view.findViewById(R.id.rl_logo);
         img_close_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                closeKey();
                 getFragmentManager().popBackStack();
+            }
+        });
+        if (edt_email.getText().equals("")){
+            edt_email.setError("Vui lòng nhập email");
+        }
+        edt_email.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!isValidEmail(s)){
+                    edt_email.setError("Vui lòng nhập email đúng định dạng");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        if (edt_password.getText().equals("")){
+            edt_password.setError("Vui lòng nhập mật khẩu");
+        }
+        edt_email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                changeKeyboardState();
+            }
+        });
+        edt_password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                changeKeyboardState();
+            }
+        });
+        edt_email.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    closeKey();
+                }
+                return false;
+            }
+        });
+        edt_password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    closeKey();
+                }
+                return false;
+            }
+        });
+        edt_email.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        edt_password.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        edt_password.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (edt_password.getText().length()<8){
+                    edt_password.setError("Vui lòng nhập mật khẩu lớn hơn 7 kí tự");
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
         btn_login.setOnClickListener(new View.OnClickListener() {
@@ -79,6 +168,35 @@ public class LoginFragment extends Fragment {
                 }));
             }
         });
+        rl_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeKey();
+            }
+        });
         return view;
+    }
+    public static boolean isValidEmail(CharSequence target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
+    }
+    public void changeKeyboardState(){
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null){
+            imm.showSoftInput(edt_password, InputMethodManager.SHOW_FORCED);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+                    rl_logo.getLayoutParams();
+            params.weight = 1.0f;
+            rl_logo.setLayoutParams(params);
+        }else{
+            closeKey();
+        }
+    }
+    public void closeKey(){
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(edt_password.getWindowToken(),0);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
+                rl_logo.getLayoutParams();
+        params.weight = 4.0f;
+        rl_logo.setLayoutParams(params);
     }
 }

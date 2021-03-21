@@ -2,6 +2,7 @@ package com.example.t2shop.Retrofit;
 
 import com.example.t2shop.Model.DataProduct;
 import com.example.t2shop.Response.ResponseAllVoucher;
+import com.example.t2shop.Response.ResponseLogin;
 import com.example.t2shop.Response.ResponseRatingAll;
 import com.google.gson.JsonObject;
 
@@ -25,7 +26,7 @@ public interface IT2ShopAPI {
     @POST("voucher/getallvoucherforuser")
     @FormUrlEncoded
     Observable<ResponseAllVoucher> getAllVoucher(@Field("user_id") int user_id);
-//    @POST("login.php")
-//    @FormUrlEncoded
-//    Call<users> getTopRatedMovies(@Field("uemail") String uemail, @Field("upassword") String upassword);
+    @POST("auth/login")
+    @FormUrlEncoded
+    Observable<ResponseLogin> login(@Field("user_email") String user_email, @Field("user_password") String user_password);
 }

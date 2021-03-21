@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -61,6 +63,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView rv_new_product, rv_featured_product;
     private EditText edt_search;
     private LinearLayout ln_search;
+    private ImageView img_shopping_cart;
     @Override
     public void onStop() {
         Common.compositeDisposable.clear();
@@ -103,7 +106,7 @@ public class HomeFragment extends Fragment {
         appBarLayout = view.findViewById(R.id.appBarLayout);
         edt_search = view.findViewById(R.id.edt_search);
         ln_search = view.findViewById(R.id.ln_search);
-
+        img_shopping_cart = view.findViewById(R.id.img_shopping_cart);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
             int scrollRange = -1;
@@ -156,6 +159,17 @@ public class HomeFragment extends Fragment {
                 }else{
                     Toast.makeText(getContext(), "Vui lòng kết nối INTERNET và thử lại", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        img_shopping_cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                CartFragment cartFragment = new CartFragment();
+                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                transaction.replace(R.id.main_frame, cartFragment);
+                transaction.addToBackStack(CartFragment.TAG);
+                transaction.commit();
             }
         });
         return view;

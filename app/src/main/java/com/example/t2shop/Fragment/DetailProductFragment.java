@@ -11,6 +11,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
@@ -18,10 +19,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Adapter.HomeProductAdapter;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Constants;
+import com.example.t2shop.DAO.ItemCartDAO;
+import com.example.t2shop.DAO.ProductDAO;
+import com.example.t2shop.DAO.PromotionDAO;
+import com.example.t2shop.Database.ItemCartDatabase;
+import com.example.t2shop.Database.ProductDatabase;
+import com.example.t2shop.Database.PromotionDatabase;
 import com.example.t2shop.Model.DataProduct;
+import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.Product;
 import com.example.t2shop.Model.Promotion;
 import com.example.t2shop.R;
@@ -50,6 +59,7 @@ public class DetailProductFragment extends Fragment {
     private TextView txt_conditional_detail_product, txt_description_detail_product, txt_rating_detail_product, txt_number_rating_detail_product2;
     private RatingBar rating_detail_product, rating_detail_product2;
     private ProgressBar rating_5_star, rating_4_star, rating_3_star, rating_2_star, rating_1_star;
+    private Button btn_add_to_cart;
     public static String TAG = DetailProductFragment.class.getName();
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -81,6 +91,7 @@ public class DetailProductFragment extends Fragment {
         rating_3_star = view.findViewById(R.id.rating_3_star);
         rating_2_star = view.findViewById(R.id.rating_2_star);
         rating_1_star = view.findViewById(R.id.rating_1_star);
+        btn_add_to_cart = view.findViewById(R.id.btn_add_to_cart);
         appBarLayoutDetailProduct.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
             int scrollRange = -1;
@@ -170,7 +181,46 @@ public class DetailProductFragment extends Fragment {
         txt_accessories_detail_product.setText(product.getProduct_accessories());
         txt_conditional_detail_product.setText(product.getProduct_condition());
         txt_description_detail_product.setText(dsc);
-
+        btn_add_to_cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int count = 0;
+                ItemCart itemCart = new ItemCart();
+                List<ItemCart> items = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+                for(int i = 0; i < items.size(); i++){
+                    if (items.get(i).getProduct_id()==product.getProduct_id()){
+                        count++;
+                        itemCart = items.get(i);
+                        itemCart.setAmount(itemCart.getAmount()+1);
+                    }
+                }
+                if (count==0){
+                    ItemCart item = new ItemCart();
+                    item.setProduct_id(product.getProduct_id());
+                    item.setProduct_name(product.getProduct_name());
+                    item.setProduct_price(product.getProduct_price());
+                    item.setProduct_description(product.getProduct_description());
+                    item.setProduct_img(product.getProduct_img());
+                    item.setPromotion_infor(promotion.getPromotion_infor());
+                    item.setAmount(1);
+                    ItemCartDatabase.getInstance(getContext()).itemCartDAO().insert(item);
+                }else{
+                    ItemCartDatabase.getInstance(getContext()).itemCartDAO().update(itemCart);
+                }
+                Toast.makeText(getContext(), "Thêm sản phẩm vào giỏ hàng thành công!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        img_shopping_cart_detail_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                CartFragment cartFragment = new CartFragment();
+                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                transaction.replace(R.id.main_frame, cartFragment);
+                transaction.addToBackStack(CartFragment.TAG);
+                transaction.commit();
+            }
+        });
         return view;
     }
 }

@@ -8,7 +8,7 @@ public class RetrofitClientAddress {
     private static Retrofit retrofit;
     public static Retrofit getInstance(){
         if(retrofit == null){
-            retrofit = new Retrofit.Builder().baseUrl("https://thongtindoanhnghiep.co/api/")
+            retrofit = new Retrofit.Builder().baseUrl("https://thongtindoanhnghiep.co/api//")
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .build();

@@ -32,91 +32,137 @@
                 android:textColor="@color/white"/>
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:layout_height="match_parent"
         android:layout_below="@+id/toolbar_checkout"
-        android:padding="20dp">
-        <TextView
-            android:id="@+id/txt_recipient_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:text="Nhập địa chỉ nhận hàng"
-            android:layout_marginTop="10dp" />
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_input_user_name"
+        android:layout_above="@+id/rl_buy">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:errorEnabled="true"
-            app:counterEnabled="true"
-            app:counterMaxLength="15">
-            <com.google.android.material.textfield.TextInputEditText
+            android:orientation="vertical"
+            android:padding="20dp">
+            <TextView
+                android:id="@+id/txt_recipient_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:text="Nhập địa chỉ nhận hàng"
+                android:layout_marginTop="10dp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Tên người nhận"/>
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_input_phone_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:errorEnabled="true"
-            app:passwordToggleEnabled="true">
-            <com.google.android.material.textfield.TextInputEditText
+                app:errorEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="15">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Tên người nhận"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Số điện thoại"
-                android:inputType="textPassword"/>
-        </com.google.android.material.textfield.TextInputLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/text_input_user_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:errorEnabled="true">
-            <com.google.android.material.textfield.TextInputEditText
+                app:errorEnabled="true"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Số điện thoại"
+                    android:inputType="textPassword"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_user_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Địa chỉ nhận hàng(số nhà, tên đường)"/>
-        </com.google.android.material.textfield.TextInputLayout>
-        <Spinner
-            android:id="@+id/spinner_city"
+                app:errorEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Địa chỉ nhận hàng(số nhà, tên đường)"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginTop="5dp"
+                android:id="@+id/text_input_user_address_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/spinner_city"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Tỉnh/ Thành phố"
+                    android:drawableRight="@drawable/arrow_address"
+                    android:focusable="false" />
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_user_address_district"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/spinner_district"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Quận/Huyện"
+                    android:drawableRight="@drawable/arrow_address"
+                    android:focusable="false"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/text_input_user_address_ward"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/spinner_ward"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Xã/Phường"
+                    android:drawableRight="@drawable/arrow_address"
+                    android:focusable="false"/>
+            </com.google.android.material.textfield.TextInputLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:id="@+id/rl_buy">
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="7dp"
-            android:layout_marginBottom="2dp"
-            android:spinnerMode="dialog"/>
-        <View
+            android:padding="15dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tổng thanh toán"
+                android:textSize="13sp"
+                android:layout_centerVertical="true"/>
+            <TextView
+                android:id="@+id/txt_sum_price_checkout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="468.000 đ"
+                android:textSize="20sp"
+                android:layout_alignParentRight="true"
+                android:textStyle="bold"
+                android:textColor="#ff00"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+        <Button
+            android:id="@+id/btn_buy"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#8A8A8A"/>
-        <Spinner
-            android:id="@+id/spinner_district"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dialog"
-            android:backgroundTint="@color/black"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="2dp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#8A8A8A"/>
-
-        <Spinner
-            android:id="@+id/spinner_ward"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dialog"
-            android:backgroundTint="@color/black"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="2dp" />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#8A8A8A"/>
-
-    </LinearLayout>
+            android:layout_height="50dp"
+            android:text="Thực Hiện Đơn Hàng"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="15dp"
+            android:background="@drawable/bg_buy_button"/>
+    </RelativeLayout>
 </RelativeLayout>

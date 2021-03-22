@@ -50,6 +50,7 @@ public class CartFragment extends Fragment {
     public static String TAG = CartFragment.class.getName();
     public static TextView txt_title_cart, txt_sum_price;
     public static int sum_price = 0;
+    private Button btn_buy;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +59,7 @@ public class CartFragment extends Fragment {
         rc_cart = view.findViewById(R.id.rc_cart);
         btn_exit_cart = view.findViewById(R.id.btn_exit_cart);
         txt_title_cart = view.findViewById(R.id.txt_title_cart);
+        btn_buy = view.findViewById(R.id.btn_buy);
         List<ItemCart> items = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
         CartItemAdapter cartItemAdapter = new CartItemAdapter(getContext(), items);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -116,6 +118,17 @@ public class CartFragment extends Fragment {
 
                     }
                 }));
+        btn_buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                CheckoutFragment checkoutFragment = new CheckoutFragment();
+                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                transaction.replace(R.id.main_frame, checkoutFragment);
+                transaction.addToBackStack(CheckoutFragment.TAG);
+                transaction.commit();
+            }
+        });
         return view;
     }
 }

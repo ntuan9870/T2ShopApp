@@ -4,6 +4,7 @@ import com.example.t2shop.Model.DataProduct;
 import com.example.t2shop.Response.ResponseAllVoucher;
 import com.example.t2shop.Response.ResponseLogin;
 import com.example.t2shop.Response.ResponseRatingAll;
+import com.example.t2shop.Response.ResponseRegister;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -29,4 +30,7 @@ public interface IT2ShopAPI {
     @POST("auth/login")
     @FormUrlEncoded
     Observable<ResponseLogin> login(@Field("user_email") String user_email, @Field("user_password") String user_password);
+    @POST("auth/register")
+    @FormUrlEncoded
+    Observable<ResponseRegister> register(@Field("user_name") String user_name, @Field("user_password") String user_password, @Field("user_email") String user_email, @Field("user_phone") String user_phone);
 }

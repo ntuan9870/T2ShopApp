@@ -1,9 +1,9 @@
 package com.example.t2shop.Response;
 
-public class ResponseRegister {
+public class ResponseSuccess {
     private String success;
 
-    public ResponseRegister() {
+    public ResponseSuccess() {
     }
 
     public String getSuccess() {

@@ -3,11 +3,9 @@ package com.example.t2shop.Fragment;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.MainThread;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -25,9 +23,8 @@ import android.widget.Toast;
 
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Constants;
-import com.example.t2shop.Model.DataProduct;
 import com.example.t2shop.R;
-import com.example.t2shop.Response.ResponseRegister;
+import com.example.t2shop.Response.ResponseSuccess;
 import com.google.android.material.textfield.TextInputLayout;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -179,10 +176,10 @@ public class RegisterFragment extends Fragment {
                     )
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Consumer<ResponseRegister>() {
+                            .subscribe(new Consumer<ResponseSuccess>() {
                         @Override
-                        public void accept(ResponseRegister responseRegister) throws Exception {
-                            if (responseRegister.getSuccess().equals("Đăng ký thành công!")){
+                        public void accept(ResponseSuccess responseSuccess) throws Exception {
+                            if (responseSuccess.getSuccess().equals("Đăng ký thành công!")){
                                 Toast.makeText(getContext(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                                 closeKey();
                                 getFragmentManager().popBackStack();

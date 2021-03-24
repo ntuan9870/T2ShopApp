@@ -41,7 +41,7 @@ public class LoginFragment extends Fragment {
 
     private ImageView img_close_login;
     public static String TAG = LoginFragment.class.getName();
-    private TextView edt_email, edt_password;
+    private TextView edt_email, edt_password, txt_register_login;
     private Button btn_login;
     private LinearLayout rl_login;
     private RelativeLayout rl_logo;
@@ -56,6 +56,18 @@ public class LoginFragment extends Fragment {
         btn_login = view.findViewById(R.id.btn_login);
         rl_login = view.findViewById(R.id.rl_login);
         rl_logo = view.findViewById(R.id.rl_logo);
+        txt_register_login = view.findViewById(R.id.txt_register_login);
+        txt_register_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                RegisterFragment registerFragment = new RegisterFragment();
+                fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                fragmentTransaction.replace(R.id.main_frame, registerFragment);
+                fragmentTransaction.addToBackStack(TAG);
+                fragmentTransaction.commit();
+            }
+        });
         img_close_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

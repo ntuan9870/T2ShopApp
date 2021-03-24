@@ -28,16 +28,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Adapter.BannerAdapter;
-import com.example.t2shop.Adapter.HomeProductAdapter;
+import com.example.t2shop.Adapter.ProductAdapter;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Constants;
 import com.example.t2shop.Model.Banner;
-import com.example.t2shop.Model.DataProduct;
+import com.example.t2shop.Response.ResponseProduct;
 import com.example.t2shop.R;
-import com.example.t2shop.Retrofit.IT2ShopAPI;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
@@ -107,6 +108,13 @@ public class HomeFragment extends Fragment {
         edt_search = view.findViewById(R.id.edt_search);
         ln_search = view.findViewById(R.id.ln_search);
         img_shopping_cart = view.findViewById(R.id.img_shopping_cart);
+        edt_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TabLayout.Tab tab = MainActivity.tabLayout.getTabAt(2);
+                tab.select();
+            }
+        });
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
             int scrollRange = -1;
@@ -179,12 +187,12 @@ public class HomeFragment extends Fragment {
         Common.compositeDisposable.add(Common.it2ShopAPI.getFeaturedProduct()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<DataProduct>() {
+                .subscribe(new Consumer<ResponseProduct>() {
                     @Override
-                    public void accept(DataProduct dataProduct) throws Exception {
-                        HomeProductAdapter homeProductAdapter = new HomeProductAdapter(getContext(), dataProduct.getProducts(), dataProduct.getPromotions(), dataProduct.getRatings());
+                    public void accept(ResponseProduct responseProduct) throws Exception {
+                        ProductAdapter productAdapter = new ProductAdapter(getContext(), responseProduct.getProducts(), responseProduct.getPromotions(), responseProduct.getRatings());
                         rv_featured_product.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                        rv_featured_product.setAdapter(homeProductAdapter);
+                        rv_featured_product.setAdapter(productAdapter);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -197,12 +205,12 @@ public class HomeFragment extends Fragment {
         Common.compositeDisposable.add(Common.it2ShopAPI.getNewProduct()
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(new Consumer<DataProduct>() {
+        .subscribe(new Consumer<ResponseProduct>() {
             @Override
-            public void accept(DataProduct dataProduct) throws Exception {
-                HomeProductAdapter homeProductAdapter = new HomeProductAdapter(getContext(), dataProduct.getProducts(), dataProduct.getPromotions(), dataProduct.getRatings());
+            public void accept(ResponseProduct responseProduct) throws Exception {
+                ProductAdapter productAdapter = new ProductAdapter(getContext(), responseProduct.getProducts(), responseProduct.getPromotions(), responseProduct.getRatings());
                 rv_new_product.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-                rv_new_product.setAdapter(homeProductAdapter);
+                rv_new_product.setAdapter(productAdapter);
             }
         }, new Consumer<Throwable>() {
             @Override

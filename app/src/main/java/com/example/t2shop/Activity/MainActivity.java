@@ -25,7 +25,7 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TabLayout tabLayout;
+    public static TabLayout tabLayout;
     private ViewPager viewPager;
 
     @Override

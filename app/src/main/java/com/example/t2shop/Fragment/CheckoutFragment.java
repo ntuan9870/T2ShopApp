@@ -1,13 +1,17 @@
 package com.example.t2shop.Fragment;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -15,18 +19,28 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.RetrofitAPIAddress;
 import com.example.t2shop.Database.ItemCartDatabase;
+import com.example.t2shop.Database.UserDatabase;
 import com.example.t2shop.Model.District;
 import com.example.t2shop.Model.ItemCart;
+import com.example.t2shop.Model.User;
 import com.example.t2shop.Model.Ward;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseCity;
+import com.example.t2shop.Response.ResponseSuccess;
 import com.example.t2shop.Retrofit.AddressAPI;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -51,6 +65,9 @@ public class CheckoutFragment extends Fragment {
     private ArrayList<Integer> arrCity = new ArrayList<>();
     private int idCity, idDistrict;
     private TextView txt_sum_price_checkout;
+    private ImageView img_back_check_out;
+    private Button btn_buy;
+    private int sum_price;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,8 +85,10 @@ public class CheckoutFragment extends Fragment {
         spinner_city = view.findViewById(R.id.spinner_city);
         spinner_district = view.findViewById(R.id.spinner_district);
         spinner_ward = view.findViewById(R.id.spinner_ward);
+        img_back_check_out = view.findViewById(R.id.img_back_check_out);
+        btn_buy = view.findViewById(R.id.btn_buy);
         List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
-        int sum_price = 0;
+        sum_price = 0;
         for (int i = 0; i < itemCarts.size(); i++){
             sum_price += itemCarts.get(i).getProduct_price()*itemCarts.get(i).getAmount()*(100-Integer.parseInt(itemCarts.get(i).getPromotion_infor()))/100;
         }
@@ -169,6 +188,70 @@ public class CheckoutFragment extends Fragment {
                 }else{
                     text_input_user_address_ward.setError("Vui lòng chọn quận/huyện trước!");
                 }
+            }
+        });
+        img_back_check_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getFragmentManager().popBackStack();
+            }
+        });
+        btn_buy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+                JSONArray jsonArray = new JSONArray();
+                for (int i = 0; i < itemCarts.size(); i++){
+                    JSONObject myJsonObject = new JSONObject();
+                    try {
+                        myJsonObject.put("promotion", itemCarts.get(i).getPromotion_infor());
+                        myJsonObject.put("num", itemCarts.get(i).getAmount());
+                        JSONObject myJsonObject2 = new JSONObject();
+                        myJsonObject2.put("product_id", itemCarts.get(i).getProduct_id());
+                        myJsonObject2.put("product_price", itemCarts.get(i).getProduct_price());
+                        myJsonObject2.put("product_name", itemCarts.get(i).getProduct_name());
+                        myJsonObject2.put("product_warranty", "1 năm");
+                        myJsonObject.put("product", myJsonObject2);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    jsonArray.put(myJsonObject);
+                }
+                Bundle mBundle = new Bundle();
+                mBundle = getArguments();
+                String voucher_id = mBundle.getString("voucher_id");
+                User user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+                compositeDisposable.add(Common.it2ShopAPI.addOrder(jsonArray.toString(), user.getUser_id()+"", text_input_user_name.getEditText().getText().toString(),
+                        text_input_phone_number.getEditText().getText().toString(), "", text_input_user_address_city.getEditText().getText().toString(), sum_price+"", "Trực tiếp",
+                        voucher_id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<ResponseSuccess>() {
+                            @Override
+                            public void accept(ResponseSuccess responseSuccess) throws Exception {
+                                AlertDialog.Builder mSuccess = new AlertDialog.Builder(getActivity());
+                                View mView = getLayoutInflater().inflate(R.layout.dialog_complete_checkout, null);
+                                Button btn_success = mView.findViewById(R.id.btn_success);
+                                mSuccess.setView(mView);
+                                AlertDialog dialog = mSuccess.create();
+                                dialog.show();
+                                btn_success.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        FragmentManager fm = getActivity().getSupportFragmentManager();
+                                        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                                            fm.popBackStack();
+                                        }
+                                        dialog.dismiss();
+                                    }
+                                });
+                            }
+                        }, new Consumer<Throwable>() {
+                            @Override
+                            public void accept(Throwable throwable) throws Exception {
+                                Log.d("AAA", throwable.getMessage().toString());
+                            }
+                        }));
             }
         });
         return view;

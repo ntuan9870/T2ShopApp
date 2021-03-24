@@ -1,8 +1,6 @@
 package com.example.t2shop.Adapter;
 
-import android.app.Activity;
 import android.content.Context;
-import android.media.Rating;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,16 +23,15 @@ import com.example.t2shop.R;
 import java.text.DecimalFormat;
 import java.util.Currency;
 import java.util.List;
-import java.util.Locale;
 
-public class HomeProductAdapter extends RecyclerView.Adapter<HomeProductAdapter.ViewHolder> {
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolder> {
 
     private Context context;
     private List<Product> arrProducts;
     private List<Promotion> arrPromotions;
     private List<String> arrRatings;
 
-    public HomeProductAdapter(Context context, List<Product> arrProducts, List<Promotion> arrPromotions, List<String> arrRatings) {
+    public ProductAdapter(Context context, List<Product> arrProducts, List<Promotion> arrPromotions, List<String> arrRatings) {
         this.context = context;
         this.arrProducts = arrProducts;
         this.arrPromotions = arrPromotions;

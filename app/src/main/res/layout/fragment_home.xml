@@ -92,7 +92,8 @@
                         android:layout_height="match_parent"
                         android:layout_margin="10dp"
                         android:background="@android:color/transparent"
-                        android:hint="Bạn muốn tìm gì?"/>
+                        android:hint="Bạn muốn tìm gì?"
+                        android:focusable="false"/>
                 </LinearLayout>
             </com.google.android.material.appbar.CollapsingToolbarLayout>
         </com.google.android.material.appbar.AppBarLayout>

@@ -1,17 +1,20 @@
-package com.example.t2shop.Model;
+package com.example.t2shop.Response;
+
+import com.example.t2shop.Model.Product;
+import com.example.t2shop.Model.Promotion;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataProduct {
+public class ResponseProduct {
     public List<Product> products = new ArrayList<>();
     public List<Promotion> promotions = new ArrayList<>();
     public List<String> ratings = new ArrayList<>();
 
-    public DataProduct() {
+    public ResponseProduct() {
     }
 
-    public DataProduct(List<Product> products, List<Promotion> promotions, List<String> ratings) {
+    public ResponseProduct(List<Product> products, List<Promotion> promotions, List<String> ratings) {
         this.products = products;
         this.promotions = promotions;
         this.ratings = ratings;

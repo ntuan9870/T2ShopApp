@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -19,32 +18,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.t2shop.Activity.MainActivity;
-import com.example.t2shop.Adapter.HomeProductAdapter;
 import com.example.t2shop.Common.Common;
-import com.example.t2shop.Common.Constants;
-import com.example.t2shop.DAO.ItemCartDAO;
-import com.example.t2shop.DAO.ProductDAO;
-import com.example.t2shop.DAO.PromotionDAO;
 import com.example.t2shop.Database.ItemCartDatabase;
-import com.example.t2shop.Database.ProductDatabase;
-import com.example.t2shop.Database.PromotionDatabase;
-import com.example.t2shop.Model.DataProduct;
 import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.Product;
 import com.example.t2shop.Model.Promotion;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseRatingAll;
-import com.example.t2shop.Retrofit.IT2ShopAPI;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.gson.JsonObject;
-
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.Currency;
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;

@@ -11,6 +11,7 @@ import com.example.t2shop.Response.ResponseSuccess;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -42,4 +43,7 @@ public interface IT2ShopAPI {
     @POST("show")
     @FormUrlEncoded
     Observable<ResponseProduct> getCategoryByID(@Field("id") int id, @Field("sl_featured") int sl_featured, @Field("sl_filter") int sl_filter);
+    @POST("show")
+    @FormUrlEncoded
+    Observable<ResponseProduct> search(@Field("key")String key);
 }

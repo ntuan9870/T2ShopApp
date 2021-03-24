@@ -1,14 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment.SearchFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    tools:context=".Fragment.NotificationFragment"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:weightSum="16">
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="#0084ED"
+        android:paddingRight="20dp"
+        android:paddingLeft="20dp"
+        android:orientation="horizontal"
+        android:weightSum="12">
+        <LinearLayout
+            android:id="@+id/ln_search"
+            android:layout_width="0dp"
+            android:layout_weight="10"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_search"
+            android:orientation="horizontal"
+            android:weightSum="10"
+            android:focusableInTouchMode="true"
+            android:layout_gravity="center_vertical">
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:src="@drawable/ic_baseline_search_24"
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp">
+            </ImageView>
+            <EditText
+                android:id="@+id/edt_search"
+                android:layout_width="0dp"
+                android:layout_weight="9"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:background="@android:color/transparent"
+                android:hint="Bạn muốn tìm gì?"/>
+        </LinearLayout>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2">
+            <ImageView
+                android:id="@+id/img_cart_notification"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_centerInParent="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/ic_baseline_shopping_cart_24"
+                app:tint="@color/white"
+                android:layout_centerVertical="true"/>
+        </RelativeLayout>
+    </LinearLayout>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="14">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+            <TextView
+                android:id="@+id/txt_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:text="Sản phẩm phù hợp với kết quả tìm kiếm"
+                android:visibility="invisible"/>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_search">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rc_search"
+                    android:layout_marginTop="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+                <TextView
+                    android:id="@+id/txt_nothing"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Không có sản phẩm nào phù hợp với từ khóa"
+                    android:textSize="13sp"
+                    android:textColor="#ff00"
+                    android:layout_centerInParent="true"
+                    android:visibility="invisible"
+                    android:textAlignment="center"/>
+            </RelativeLayout>
+        </RelativeLayout>
+    </androidx.core.widget.NestedScrollView>
+</LinearLayout>

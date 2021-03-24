@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Adapter.BannerAdapter;
 import com.example.t2shop.Adapter.ProductAdapter;
 import com.example.t2shop.Common.Common;
@@ -37,6 +38,7 @@ import com.example.t2shop.Response.ResponseProduct;
 import com.example.t2shop.R;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
@@ -106,6 +108,13 @@ public class HomeFragment extends Fragment {
         edt_search = view.findViewById(R.id.edt_search);
         ln_search = view.findViewById(R.id.ln_search);
         img_shopping_cart = view.findViewById(R.id.img_shopping_cart);
+        edt_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TabLayout.Tab tab = MainActivity.tabLayout.getTabAt(2);
+                tab.select();
+            }
+        });
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
             int scrollRange = -1;

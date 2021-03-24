@@ -12,6 +12,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class Common {
     public static IT2ShopAPI it2ShopAPI;
     public static CompositeDisposable compositeDisposable;
+
     public static IT2ShopAPI getAPI(){
         return RetrofitClient.getInstance().create(IT2ShopAPI.class);
     }

@@ -106,7 +106,6 @@ public class CartFragment extends Fragment {
                                 arrOptions.add(responseAllVoucher.getVouchers().get(i).getVoucher_name());
                             }
                             Spinner spinner = view.findViewById(R.id.spinner_select_voucher);
-                            spinner.setSelection(0);
                             ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, arrOptions);
                             spinner.setAdapter(adapter);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -122,6 +121,12 @@ public class CartFragment extends Fragment {
 
                                 }
                             });
+                            if (responseAllVoucher.getVouchers()!=null){
+                                Bundle mBundle = new Bundle();
+                                mBundle = getArguments();
+                                idSL = mBundle.getInt("sl_voucher_from_notification");
+                                spinner.setSelection(idSL);
+                            }
                         }
                     }, new Consumer<Throwable>() {
                         @Override

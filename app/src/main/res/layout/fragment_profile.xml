@@ -28,21 +28,64 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="Chi tiết đơn hàng"
+                android:text="Thông tin cá nhân"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"/>
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/edt_username"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:errorEnabled="true">
-        <com.google.android.material.textfield.TextInputEditText
+        android:layout_height="0dp"
+        android:layout_weight="14">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </com.google.android.material.textfield.TextInputLayout>
-
+            android:layout_height="match_parent"
+            android:padding="20dp"
+            android:orientation="vertical">
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edt_username"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                app:counterMaxLength="15"
+                app:counterEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Tên hiển thị"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edt_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edt_phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true"
+                app:passwordToggleEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Điện thoại"
+                    android:inputType="phone"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <Button
+                android:id="@+id/btn_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Thay đổi"
+                android:background="@drawable/btn_confirm"
+                android:layout_marginTop="10dp"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

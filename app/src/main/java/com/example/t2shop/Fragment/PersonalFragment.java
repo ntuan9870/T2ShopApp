@@ -26,7 +26,7 @@ public class PersonalFragment extends Fragment {
 
     public static TextView txt_login_register, txt_name_1;
     public static Button btn_log_out;
-    private LinearLayout ln_order_profile;
+    private LinearLayout ln_order_profile, ln_change_password, ln_profile;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,6 +36,8 @@ public class PersonalFragment extends Fragment {
         txt_name_1 = view.findViewById(R.id.txt_name_1);
         btn_log_out = view.findViewById(R.id.btn_log_out);
         ln_order_profile = view.findViewById(R.id.ln_order_profile);
+        ln_change_password = view.findViewById(R.id.ln_change_password);
+        ln_profile = view.findViewById(R.id.ln_profile);
         User user = UserDatabase.getInstance(getContext()).userDAO().getItems();
         if (user==null){
             login();
@@ -62,6 +64,17 @@ public class PersonalFragment extends Fragment {
                 OrderManagerFragment orderManagerFragment = new OrderManagerFragment();
                 fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
                 fragmentTransaction.replace(R.id.main_frame, orderManagerFragment);
+                fragmentTransaction.commit();
+            }
+        });
+        ln_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.addToBackStack(ProfileFragment.TAG);
+                ProfileFragment profileFragment = new ProfileFragment();
+                fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                fragmentTransaction.replace(R.id.main_frame, profileFragment);
                 fragmentTransaction.commit();
             }
         });

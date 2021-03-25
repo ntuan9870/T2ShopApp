@@ -3,14 +3,11 @@ package com.example.t2shop.Retrofit;
 import com.example.t2shop.Response.ResponseOrder;
 import com.example.t2shop.Response.ResponseOrderItem;
 import com.example.t2shop.Response.ResponseProduct;
-import com.example.t2shop.Model.Product;
 import com.example.t2shop.Response.ResponseAllVoucher;
 import com.example.t2shop.Response.ResponseCategory;
 import com.example.t2shop.Response.ResponseLogin;
 import com.example.t2shop.Response.ResponseRatingAll;
 import com.example.t2shop.Response.ResponseSuccess;
-
-import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
@@ -54,4 +51,11 @@ public interface IT2ShopAPI {
     @POST("order/show/detail")
     @FormUrlEncoded
     Observable<ResponseOrderItem>  getDetailOrder(@Field("order_id") int order_id);
+    @POST("users/postEdit")
+    @FormUrlEncoded
+    Observable<ResponseSuccess> changeInformation(@Field("user_id") int user_id, @Field("user_name")String user_name,@Field("user_email") String user_email,@Field("user_phone") String user_phone);
+
+    @POST("auth/checksameemail")
+    @FormUrlEncoded
+    Observable<ResponseSuccess> checkSameEmail(@Field("useremail")String useremail);
 }

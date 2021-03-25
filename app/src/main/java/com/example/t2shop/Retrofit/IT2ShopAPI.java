@@ -1,5 +1,7 @@
 package com.example.t2shop.Retrofit;
 
+import com.example.t2shop.Response.ResponseOrder;
+import com.example.t2shop.Response.ResponseOrderItem;
 import com.example.t2shop.Response.ResponseProduct;
 import com.example.t2shop.Model.Product;
 import com.example.t2shop.Response.ResponseAllVoucher;
@@ -46,4 +48,10 @@ public interface IT2ShopAPI {
     @POST("show")
     @FormUrlEncoded
     Observable<ResponseProduct> search(@Field("key")String key);
+    @POST("order/show")
+    @FormUrlEncoded
+    Observable<ResponseOrder>  getAllOrderByUserId(@Field("user_id") int user_id);
+    @POST("order/show/detail")
+    @FormUrlEncoded
+    Observable<ResponseOrderItem>  getDetailOrder(@Field("order_id") int order_id);
 }

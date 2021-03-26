@@ -1,6 +1,5 @@
 package com.example.t2shop.Fragment;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,14 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.RetrofitAPIAddress;
@@ -32,11 +29,10 @@ import com.example.t2shop.Model.User;
 import com.example.t2shop.Model.Ward;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseCity;
-import com.example.t2shop.Response.ResponseSuccess;
+import com.example.t2shop.Response.ResponseMessage;
 import com.example.t2shop.Retrofit.AddressAPI;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -226,9 +222,9 @@ public class CheckoutFragment extends Fragment {
                         voucher_id)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<ResponseSuccess>() {
+                        .subscribe(new Consumer<ResponseMessage>() {
                             @Override
-                            public void accept(ResponseSuccess responseSuccess) throws Exception {
+                            public void accept(ResponseMessage responseMessage) throws Exception {
                                 AlertDialog.Builder mSuccess = new AlertDialog.Builder(getActivity());
                                 View mView = getLayoutInflater().inflate(R.layout.dialog_complete_checkout, null);
                                 Button btn_success = mView.findViewById(R.id.btn_success);

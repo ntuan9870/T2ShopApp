@@ -8,21 +8,20 @@ import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.t2shop.Common.Common;
+import com.example.t2shop.Common.Common2;
 import com.example.t2shop.Database.UserDatabase;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
-import com.example.t2shop.Response.ResponseSuccess;
+import com.example.t2shop.Response.ResponseMessage;
 import com.google.android.material.textfield.TextInputLayout;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -104,26 +103,27 @@ public class ProfileFragment extends Fragment {
                                 edt_email.getEditText().getText().toString().trim(), edt_phone_number.getEditText().getText().toString().trim())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Consumer<ResponseSuccess>() {
+                                .subscribe(new Consumer<ResponseMessage>() {
                                     @Override
-                                    public void accept(ResponseSuccess responseChangeInformation) throws Exception {
+                                    public void accept(ResponseMessage responseChangeInformation) throws Exception {
                                         if (responseChangeInformation.getError()!=null){
-                                            Toast.makeText(getContext(), "Không thành công!", Toast.LENGTH_SHORT).show();
+                                            Common2.showDialogAutoClose(getContext(), "Không thành công!");
                                         } else if (responseChangeInformation.getSuccess().equals("Sửa đổi thông tin thành công!")){
                                             user.setUser_email(edt_email.getEditText().getText().toString().trim());
                                             user.setUser_name(edt_username.getEditText().getText().toString().trim());
                                             user.setUser_phone(edt_phone_number.getEditText().getText().toString().trim());
                                             UserDatabase.getInstance(getContext()).userDAO().update(user);
-                                            Toast.makeText(getContext(), "Sửa đổi thông tin thành công!", Toast.LENGTH_SHORT).show();
+                                            Common2.showDialogAutoClose(getContext(), "Sửa đổi thông tin thành công!");
                                         }else{
-                                            Toast.makeText(getContext(), "Không thành công!", Toast.LENGTH_SHORT).show();
+                                            Common2.showDialogAutoClose(getContext(), "Không thành công!");
                                         }
                                         loading.dismiss();
                                     }
                                 }, new Consumer<Throwable>() {
                                     @Override
                                     public void accept(Throwable throwable) throws Exception {
-                                        Toast.makeText(getContext(), "Lỗi kết nối!"+throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Common2.showDialogAutoClose(getContext(), "Lỗi kết nối!");
+                                        loading.dismiss();
                                     }
                                 }));
                     }
@@ -162,10 +162,10 @@ public class ProfileFragment extends Fragment {
         Common.compositeDisposable.add(Common.it2ShopAPI.checkSameEmail(edt_email.getEditText().getText().toString().trim())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseSuccess>() {
+                .subscribe(new Consumer<ResponseMessage>() {
                     @Override
-                    public void accept(ResponseSuccess responseSuccess) throws Exception {
-                        if (responseSuccess.getError()!=null) {
+                    public void accept(ResponseMessage responseMessage) throws Exception {
+                        if (responseMessage.getError()!=null) {
                             edt_email.setError("Email đã tồn tại!");
                         }
                     }

@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Constants;
 import com.example.t2shop.R;
-import com.example.t2shop.Response.ResponseSuccess;
+import com.example.t2shop.Response.ResponseMessage;
 import com.google.android.material.textfield.TextInputLayout;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -176,10 +176,10 @@ public class RegisterFragment extends Fragment {
                     )
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Consumer<ResponseSuccess>() {
+                            .subscribe(new Consumer<ResponseMessage>() {
                         @Override
-                        public void accept(ResponseSuccess responseSuccess) throws Exception {
-                            if (responseSuccess.getSuccess().equals("Đăng ký thành công!")){
+                        public void accept(ResponseMessage responseMessage) throws Exception {
+                            if (responseMessage.getSuccess().equals("Đăng ký thành công!")){
                                 Toast.makeText(getContext(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                                 closeKey();
                                 getFragmentManager().popBackStack();

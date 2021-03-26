@@ -78,6 +78,17 @@ public class PersonalFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+        ln_change_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.addToBackStack(ResetPasswordFragment.TAG);
+                ResetPasswordFragment resetPasswordFragment = new ResetPasswordFragment();
+                fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                fragmentTransaction.replace(R.id.main_frame, resetPasswordFragment);
+                fragmentTransaction.commit();
+            }
+        });
         return view;
     }
 

@@ -41,7 +41,7 @@ public class LoginFragment extends Fragment {
 
     private ImageView img_close_login;
     public static String TAG = LoginFragment.class.getName();
-    private TextView edt_email, edt_password, txt_register_login;
+    private TextView edt_email, edt_password, txt_register_login, txt_forgot_password;
     private Button btn_login;
     private LinearLayout rl_login;
     private RelativeLayout rl_logo;
@@ -57,6 +57,18 @@ public class LoginFragment extends Fragment {
         rl_login = view.findViewById(R.id.rl_login);
         rl_logo = view.findViewById(R.id.rl_logo);
         txt_register_login = view.findViewById(R.id.txt_register_login);
+        txt_forgot_password = view.findViewById(R.id.txt_forgot_password);
+        txt_forgot_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
+                fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                fragmentTransaction.replace(R.id.main_frame, forgotPasswordFragment);
+                fragmentTransaction.addToBackStack(ForgotPasswordFragment.TAG);
+                fragmentTransaction.commit();
+            }
+        });
         txt_register_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +76,7 @@ public class LoginFragment extends Fragment {
                 RegisterFragment registerFragment = new RegisterFragment();
                 fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
                 fragmentTransaction.replace(R.id.main_frame, registerFragment);
-                fragmentTransaction.addToBackStack(TAG);
+                fragmentTransaction.addToBackStack(RegisterFragment.TAG);
                 fragmentTransaction.commit();
             }
         });

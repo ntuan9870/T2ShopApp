@@ -10,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -20,12 +21,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.t2shop.Common.Common;
+import com.example.t2shop.Common.Common2;
+import com.example.t2shop.Common.KeyboardWatcher;
 import com.example.t2shop.Database.ItemCartDatabase;
 import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Interface.IOnBackPressed;
 import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
@@ -45,6 +50,7 @@ public class LoginFragment extends Fragment {
     private Button btn_login;
     private LinearLayout rl_login;
     private RelativeLayout rl_logo;
+    private NestedScrollView scrollView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +63,7 @@ public class LoginFragment extends Fragment {
         rl_login = view.findViewById(R.id.rl_login);
         rl_logo = view.findViewById(R.id.rl_logo);
         txt_register_login = view.findViewById(R.id.txt_register_login);
+        scrollView = view.findViewById(R.id.scrollView);
         txt_forgot_password = view.findViewById(R.id.txt_forgot_password);
         txt_forgot_password.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -178,10 +185,20 @@ public class LoginFragment extends Fragment {
                             PersonalFragment.txt_login_register.setText(user.getUser_name());
                             PersonalFragment.txt_name_1.setText(user.getUser_email());
                             PersonalFragment.btn_log_out.setVisibility(View.VISIBLE);
-                            getFragmentManager().popBackStack();
+                            Bundle bundle = getArguments();
                             Toast.makeText(getContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                            if (bundle.getString("checkouting")!=null){
+                                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                                CheckoutFragment checkoutFragment = new CheckoutFragment();
+                                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                                transaction.replace(R.id.main_frame, checkoutFragment);
+                                transaction.commit();
+                            }else {
+                                getFragmentManager().popBackStack();
+                            }
                         }else {
                             Toast.makeText(getContext(), "Email hoặc mật khẩu chưa đúng!", Toast.LENGTH_SHORT).show();
+                            Common2.confirmDialog(getContext(), "Tên hoặc mật khẩu chưa đúng", "Lưu ý: Nếu nhập sai quá 3 lần bạn sẽ bị chuyển sang quên mật khẩu!","Tôi hiểu rồi");
                         }
                     }
                 }, new Consumer<Throwable>() {
@@ -198,6 +215,7 @@ public class LoginFragment extends Fragment {
                 closeKey();
             }
         });
+
         return view;
     }
     public static boolean isValidEmail(CharSequence target) {
@@ -207,10 +225,6 @@ public class LoginFragment extends Fragment {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (imm != null){
             imm.showSoftInput(edt_password, InputMethodManager.SHOW_FORCED);
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                    rl_logo.getLayoutParams();
-            params.weight = 1.0f;
-            rl_logo.setLayoutParams(params);
         }else{
             closeKey();
         }
@@ -218,9 +232,5 @@ public class LoginFragment extends Fragment {
     public void closeKey(){
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(edt_password.getWindowToken(),0);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)
-                rl_logo.getLayoutParams();
-        params.weight = 4.0f;
-        rl_logo.setLayoutParams(params);
     }
 }

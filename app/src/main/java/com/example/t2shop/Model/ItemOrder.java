@@ -1,5 +1,7 @@
 package com.example.t2shop.Model;
 
+import com.example.t2shop.Common.Common;
+
 public class ItemOrder {
     private int product_id;
     private String product_name;
@@ -46,7 +48,7 @@ public class ItemOrder {
     }
 
     public String getProduct_img() {
-        return product_img.replace("localhost:8000", "192.168.43.126");
+        return product_img.replace("http://localhost:8000/", Common.idServer);
     }
 
     public void setProduct_img(String product_img) {

@@ -54,9 +54,6 @@ public class CartFragment extends Fragment {
     public static TextView txt_title_cart, txt_sum_price;
     public static int sum_price = 0;
     private Button btn_buy;
-    private String voucher="null";
-    private int idSL = -1;
-    private List<Voucher> voucherList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -91,67 +88,28 @@ public class CartFragment extends Fragment {
             }
         });
         User user = UserDatabase.getInstance(getContext()).userDAO().getItems();
-        idSL = 0;
-        if (user!=null){
-            Common.compositeDisposable.add(Common.it2ShopAPI.getAllVoucher(user.getUser_id())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<ResponseAllVoucher>() {
-                        @Override
-                        public void accept(ResponseAllVoucher responseAllVoucher) throws Exception {
-                            voucherList = responseAllVoucher.getVouchers();
-                            ArrayList<String> arrOptions = new ArrayList<>();
-                            arrOptions.add("Khong chon Voucher");
-                            for (int i = 0; i < responseAllVoucher.getVouchers().size(); i++){
-                                arrOptions.add(responseAllVoucher.getVouchers().get(i).getVoucher_name());
-                            }
-                            Spinner spinner = view.findViewById(R.id.spinner_select_voucher);
-                            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, arrOptions);
-                            spinner.setAdapter(adapter);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinner.setAdapter(adapter);
-                            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                @Override
-                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                    idSL = position;
-                                }
 
-                                @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-
-                                }
-                            });
-                            if (responseAllVoucher.getVouchers()!=null){
-                                Bundle mBundle = new Bundle();
-                                mBundle = getArguments();
-                                idSL = mBundle.getInt("sl_voucher_from_notification");
-                                spinner.setSelection(idSL);
-                            }
-                        }
-                    }, new Consumer<Throwable>() {
-                        @Override
-                        public void accept(Throwable throwable) throws Exception {
-
-                        }
-                    }));
-        }
         btn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (idSL == 0){
-                    voucher = "null";
+                if (user==null){
+                    Bundle bundle = new Bundle();
+                    bundle.putString("checkouting", "yes");
+                    FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                    LoginFragment loginFragment = new LoginFragment();
+                    loginFragment.setArguments(bundle);
+                    transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    transaction.replace(R.id.main_frame, loginFragment);
+                    transaction.addToBackStack(LoginFragment.TAG);
+                    transaction.commit();
                 }else{
-                    voucher = voucherList.get(idSL-1).getVoucher_id()+"";
+                    FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                    CheckoutFragment checkoutFragment = new CheckoutFragment();
+                    transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    transaction.replace(R.id.main_frame, checkoutFragment);
+                    transaction.addToBackStack(CheckoutFragment.TAG);
+                    transaction.commit();
                 }
-                Bundle bundle = new Bundle();
-                bundle.putString("voucher_id", voucher);
-                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
-                CheckoutFragment checkoutFragment = new CheckoutFragment();
-                checkoutFragment.setArguments(bundle);
-                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
-                transaction.replace(R.id.main_frame, checkoutFragment);
-                transaction.addToBackStack(CheckoutFragment.TAG);
-                transaction.commit();
             }
         });
         return view;

@@ -23,22 +23,6 @@
                 android:layout_height="wrap_content"
                 android:layoutAnimation="@anim/layout_animation"
                 android:background="#E8E8E8"/>
-            <TextView
-                android:id="@+id/txt_voucher"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rc_cart"
-                android:text="Chọn Voucher"
-                android:textStyle="bold"
-                android:textSize="15sp"
-                android:layout_marginTop="10dp"/>
-            <Spinner
-                android:id="@+id/spinner_select_voucher"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dialog"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/txt_voucher"/>
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
     <RelativeLayout

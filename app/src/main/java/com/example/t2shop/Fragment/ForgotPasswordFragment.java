@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
@@ -33,6 +35,7 @@ public class ForgotPasswordFragment extends Fragment {
     private ImageView img_back;
     private TextInputLayout edt_email, edt_code;
     private Button btn_confirm, btn_send_code;
+    private TextView txt_time_count_down;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,6 +46,7 @@ public class ForgotPasswordFragment extends Fragment {
         edt_code = view.findViewById(R.id.edt_code);
         btn_confirm = view.findViewById(R.id.btn_confirm);
         btn_send_code = view.findViewById(R.id.btn_send_code);
+        txt_time_count_down = view.findViewById(R.id.txt_time_count_down);
         edt_email.getEditText().addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -89,7 +93,18 @@ public class ForgotPasswordFragment extends Fragment {
                         public void accept(ResponseMessage responseMessage) throws Exception {
                             if (responseMessage.getMessage()!=null){
                                 if (responseMessage.getMessage().equals("success")){
-                                    Common2.showDialogAutoClose(getContext(), "Gửi mã thành công!");
+                                    Common2.showDialogAutoClose(getContext(), "Bạn có 180s để nhập mã!");
+                                    new CountDownTimer(180000, 1000) {
+
+                                        public void onTick(long millisUntilFinished) {
+                                            txt_time_count_down.setText("" + millisUntilFinished / 1000);
+                                        }
+
+                                        public void onFinish() {
+                                            txt_time_count_down.setText("Chờ..");
+                                        }
+
+                                    }.start();
                                 }else if (responseMessage.getMessage().equals("fail")){
                                     Common2.showDialogAutoClose(getContext(), "Email không tồn tại trong hệ thống!");
                                 }else if (responseMessage.getMessage().equals("fail2")){

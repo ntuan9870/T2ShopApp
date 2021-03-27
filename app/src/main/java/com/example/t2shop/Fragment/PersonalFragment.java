@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.t2shop.Common.Common2;
 import com.example.t2shop.Database.ItemCartDatabase;
 import com.example.t2shop.Database.UserDatabase;
 import com.example.t2shop.Model.ItemCart;
@@ -59,34 +60,46 @@ public class PersonalFragment extends Fragment {
         ln_order_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.addToBackStack(OrderManagerFragment.TAG);
-                OrderManagerFragment orderManagerFragment = new OrderManagerFragment();
-                fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
-                fragmentTransaction.replace(R.id.main_frame, orderManagerFragment);
-                fragmentTransaction.commit();
+                if (user!=null) {
+                    FragmentTransaction fragmentTransaction = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.addToBackStack(OrderManagerFragment.TAG);
+                    OrderManagerFragment orderManagerFragment = new OrderManagerFragment();
+                    fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    fragmentTransaction.replace(R.id.main_frame, orderManagerFragment);
+                    fragmentTransaction.commit();
+                }else{
+                    Common2.errorDialog(getContext(),"Bạn chưa đăng nhập!");
+                }
             }
         });
         ln_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.addToBackStack(ProfileFragment.TAG);
-                ProfileFragment profileFragment = new ProfileFragment();
-                fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
-                fragmentTransaction.replace(R.id.main_frame, profileFragment);
-                fragmentTransaction.commit();
+                if (user!=null) {
+                    FragmentTransaction fragmentTransaction = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.addToBackStack(ProfileFragment.TAG);
+                    ProfileFragment profileFragment = new ProfileFragment();
+                    fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    fragmentTransaction.replace(R.id.main_frame, profileFragment);
+                    fragmentTransaction.commit();
+                }else{
+                    Common2.errorDialog(getContext(),"Bạn chưa đăng nhập!");
+                }
             }
         });
         ln_change_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.addToBackStack(ResetPasswordFragment.TAG);
-                ResetPasswordFragment resetPasswordFragment = new ResetPasswordFragment();
-                fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
-                fragmentTransaction.replace(R.id.main_frame, resetPasswordFragment);
-                fragmentTransaction.commit();
+                if (user!=null) {
+                    FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                    fragmentTransaction.addToBackStack(ResetPasswordFragment.TAG);
+                    ResetPasswordFragment resetPasswordFragment = new ResetPasswordFragment();
+                    fragmentTransaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    fragmentTransaction.replace(R.id.main_frame, resetPasswordFragment);
+                    fragmentTransaction.commit();
+                }else{
+                    Common2.errorDialog(getContext(),"Bạn chưa đăng nhập!");
+                }
             }
         });
         return view;

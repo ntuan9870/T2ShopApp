@@ -1,5 +1,7 @@
 package com.example.t2shop.Model;
 
+import com.example.t2shop.Common.Common;
+
 public class Category {
     private int category_id;
     private String category_name;
@@ -27,7 +29,7 @@ public class Category {
     }
 
     public String getCategory_image() {
-        return category_image.replace("localhost:8000", "192.168.43.126");
+        return category_image.replace("http://localhost:8000/", Common.idServer);
     }
 
     public void setCategory_image(String category_image) {

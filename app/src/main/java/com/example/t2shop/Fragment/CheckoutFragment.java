@@ -12,22 +12,28 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.t2shop.Common.Common;
+import com.example.t2shop.Common.Common2;
 import com.example.t2shop.Common.RetrofitAPIAddress;
 import com.example.t2shop.Database.ItemCartDatabase;
 import com.example.t2shop.Database.UserDatabase;
 import com.example.t2shop.Model.District;
 import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.User;
+import com.example.t2shop.Model.Voucher;
 import com.example.t2shop.Model.Ward;
 import com.example.t2shop.R;
+import com.example.t2shop.Response.ResponseAllVoucher;
 import com.example.t2shop.Response.ResponseCity;
 import com.example.t2shop.Response.ResponseMessage;
 import com.example.t2shop.Retrofit.AddressAPI;
@@ -43,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
@@ -64,10 +71,15 @@ public class CheckoutFragment extends Fragment {
     private ImageView img_back_check_out;
     private Button btn_buy;
     private int sum_price;
+    private String voucher="null";
+    private int idSL = -1;
+    private List<Voucher> voucherList;
+    private User user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
         compositeDisposable = new CompositeDisposable();
         addressAPI = RetrofitAPIAddress.getAPI();
         View view = inflater.inflate(R.layout.fragment_check_out, container, false);
@@ -101,13 +113,7 @@ public class CheckoutFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()>15){
-                    text_input_user_name.setError("Tên người nhận quá dài!");
-                }else if (s.length()==0) {
-                    text_input_user_name.setError("Tên người nhận là bắt buộc!");
-                }else{
-                    text_input_user_name.setErrorEnabled(false);
-                }
+                validateName();
             }
 
             @Override
@@ -123,20 +129,11 @@ public class CheckoutFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length()>11){
-                    text_input_phone_number.setError("Số điện thoại quá dài!");
-                }else if(s.length()==0){
-                    text_input_phone_number.setError("Số điện thoại là bắt buộc!");
-                }else{
-                    text_input_phone_number.setErrorEnabled(false);
-                }
+                validatePhone();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length()<8) {
-                    text_input_phone_number.setError("Số quá ngắn");
-                }
             }
         });
         text_input_user_address.getEditText().addTextChangedListener(new TextWatcher() {
@@ -147,15 +144,44 @@ public class CheckoutFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if(s.length()==0){
-                    text_input_user_address.setError("Số điện thoại là bắt buộc!");
-                }else{
-                    text_input_user_address.setErrorEnabled(false);
-                }
+                validateAddress();
             }
 
             @Override
             public void afterTextChanged(Editable s) {
+            }
+        });
+        text_input_user_address_city.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                text_input_user_address_district.getEditText().setText("");
+                text_input_user_address_ward.getEditText().setText("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        text_input_user_address_district.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                text_input_user_address_ward.getEditText().setText("");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
         spinner_city.setOnClickListener(new View.OnClickListener() {
@@ -192,65 +218,174 @@ public class CheckoutFragment extends Fragment {
                 getFragmentManager().popBackStack();
             }
         });
+        idSL = 0;
+        Common.compositeDisposable.add(Common.it2ShopAPI.getAllVoucher(user.getUser_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseAllVoucher>() {
+                    @Override
+                    public void accept(ResponseAllVoucher responseAllVoucher) throws Exception {
+                        voucherList = responseAllVoucher.getVouchers();
+                        ArrayList<String> arrOptions = new ArrayList<>();
+                        arrOptions.add("Khong chon Voucher");
+                        for (int i = 0; i < responseAllVoucher.getVouchers().size(); i++){
+                            arrOptions.add(responseAllVoucher.getVouchers().get(i).getVoucher_name());
+                        }
+                        Spinner spinner = view.findViewById(R.id.spinner_select_voucher);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, arrOptions);
+                        spinner.setAdapter(adapter);
+                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        spinner.setAdapter(adapter);
+                        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                idSL = position-1;
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+                        if (responseAllVoucher.getVouchers()!=null){
+                            Bundle mBundle = new Bundle();
+                            mBundle = getArguments();
+                            idSL = mBundle.getInt("sl_voucher_from_notification");
+                            spinner.setSelection(idSL);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+
+                    }
+                }));
         btn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
-                JSONArray jsonArray = new JSONArray();
-                for (int i = 0; i < itemCarts.size(); i++){
-                    JSONObject myJsonObject = new JSONObject();
-                    try {
-                        myJsonObject.put("promotion", itemCarts.get(i).getPromotion_infor());
-                        myJsonObject.put("num", itemCarts.get(i).getAmount());
-                        JSONObject myJsonObject2 = new JSONObject();
-                        myJsonObject2.put("product_id", itemCarts.get(i).getProduct_id());
-                        myJsonObject2.put("product_price", itemCarts.get(i).getProduct_price());
-                        myJsonObject2.put("product_name", itemCarts.get(i).getProduct_name());
-                        myJsonObject2.put("product_warranty", "1 năm");
-                        myJsonObject.put("product", myJsonObject2);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                if (validateName()&&validatePhone()&&validateAddress()&&validateCity()&&validateDistrict()&&validateWard()){
+                    SweetAlertDialog dialogLoading = Common2.loadingDialog(getContext(), "Chờ chút..");
+                    dialogLoading.show();
+                    List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+                    JSONArray jsonArray = new JSONArray();
+                    for (int i = 0; i < itemCarts.size(); i++){
+                        JSONObject myJsonObject = new JSONObject();
+                        try {
+                            myJsonObject.put("promotion", itemCarts.get(i).getPromotion_infor());
+                            myJsonObject.put("num", itemCarts.get(i).getAmount());
+                            JSONObject myJsonObject2 = new JSONObject();
+                            myJsonObject2.put("product_id", itemCarts.get(i).getProduct_id());
+                            myJsonObject2.put("product_price", itemCarts.get(i).getProduct_price());
+                            myJsonObject2.put("product_name", itemCarts.get(i).getProduct_name());
+                            myJsonObject2.put("product_warranty", "1 năm");
+                            myJsonObject.put("product", myJsonObject2);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        jsonArray.put(myJsonObject);
                     }
-                    jsonArray.put(myJsonObject);
-                }
-                Bundle mBundle = new Bundle();
-                mBundle = getArguments();
-                String voucher_id = mBundle.getString("voucher_id");
-                User user = UserDatabase.getInstance(getContext()).userDAO().getItems();
-                compositeDisposable.add(Common.it2ShopAPI.addOrder(jsonArray.toString(), user.getUser_id()+"", text_input_user_name.getEditText().getText().toString(),
-                        text_input_phone_number.getEditText().getText().toString(), "", text_input_user_address_city.getEditText().getText().toString(), sum_price+"", "Trực tiếp",
-                        voucher_id)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<ResponseMessage>() {
-                            @Override
-                            public void accept(ResponseMessage responseMessage) throws Exception {
-                                AlertDialog.Builder mSuccess = new AlertDialog.Builder(getActivity());
-                                View mView = getLayoutInflater().inflate(R.layout.dialog_complete_checkout, null);
-                                Button btn_success = mView.findViewById(R.id.btn_success);
-                                mSuccess.setView(mView);
-                                AlertDialog dialog = mSuccess.create();
-                                dialog.show();
-                                btn_success.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        FragmentManager fm = getActivity().getSupportFragmentManager();
-                                        for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-                                            fm.popBackStack();
+                    String voucher_id = "";
+                    if(idSL<0){
+                        voucher_id = null;
+                    }else{
+                        voucher_id = voucherList.get(idSL).getVoucher_id()+"";
+                    }
+
+                    String address = text_input_user_address.getEditText().getText().toString().trim()+" - "+text_input_user_address_ward.getEditText().getText().toString().trim()+" - "
+                            +text_input_user_address_ward.getEditText().getText().toString().trim()+ " - "+ text_input_user_address_city.getEditText().getText().toString();
+                    compositeDisposable.add(Common.it2ShopAPI.addOrder(jsonArray.toString(), user.getUser_id()+"", text_input_user_name.getEditText().getText().toString(),
+                            text_input_phone_number.getEditText().getText().toString(), "", address, sum_price+"", "Trực tiếp",
+                            voucher_id)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<ResponseMessage>() {
+                                @Override
+                                public void accept(ResponseMessage responseMessage) throws Exception {
+                                    dialogLoading.dismiss();
+                                    AlertDialog.Builder mSuccess = new AlertDialog.Builder(getActivity());
+                                    View mView = getLayoutInflater().inflate(R.layout.dialog_complete_checkout, null);
+                                    Button btn_success = mView.findViewById(R.id.btn_success);
+                                    mSuccess.setView(mView);
+                                    AlertDialog dialog = mSuccess.create();
+                                    dialog.show();
+                                    btn_success.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            FragmentManager fm = getActivity().getSupportFragmentManager();
+                                            for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                                                fm.popBackStack();
+                                            }
+                                            dialog.dismiss();
                                         }
-                                        dialog.dismiss();
-                                    }
-                                });
-                            }
-                        }, new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) throws Exception {
-                                Log.d("AAA", throwable.getMessage().toString());
-                            }
-                        }));
+                                    });
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                }
+                            }));
+                }
             }
         });
         return view;
+    }
+
+    private boolean validateWard() {
+        if (text_input_user_address_ward.getEditText().getText().length()==0) {
+            text_input_user_address_ward.setError("Quận huyện là bắt buộc!");
+            return false;
+        }
+        text_input_user_address_ward.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validateDistrict() {
+        if (text_input_user_address_district.getEditText().getText().length()==0) {
+            text_input_user_address_district.setError("Tỉnh thành phố là bắt buộc!");
+            return false;
+        }
+        text_input_user_address_district.setErrorEnabled(false);
+        return true;
+    }
+
+
+    private boolean validateCity() {
+        if (text_input_user_address_city.getEditText().getText().length()==0) {
+            text_input_user_address_city.setError("Tỉnh thành phố là bắt buộc!");
+            return false;
+        }
+        text_input_user_address_city.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validateAddress() {
+        if (text_input_user_address.getEditText().getText().length()==0) {
+            text_input_user_address.setError("Địa chỉ là bắt buộc!");
+            return false;
+        }
+        text_input_user_address.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validatePhone() {
+        if (text_input_phone_number.getEditText().getText().length()==0) {
+            text_input_phone_number.setError("Số điện thoại là bắt buộc!");
+            return false;
+        }
+        text_input_phone_number.setErrorEnabled(false);
+        return true;
+    }
+
+    private boolean validateName() {
+        if (text_input_user_name.getEditText().getText().length()>15){
+            text_input_user_name.setError("Tên người nhận quá dài!");
+            return false;
+        }else if (text_input_user_name.getEditText().getText().length()==0) {
+            text_input_user_name.setError("Tên người nhận là bắt buộc!");
+            return false;
+        }
+        text_input_user_name.setErrorEnabled(false);
+        return true;
     }
 
     private void selectAddressCity() {

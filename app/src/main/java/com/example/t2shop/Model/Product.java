@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.example.t2shop.Common.Common;
+
 import java.io.Serializable;
 @Entity(tableName = "products")
 public class Product implements Serializable {
@@ -69,7 +71,7 @@ public class Product implements Serializable {
     }
 
     public String getProduct_img() {
-        return product_img.replace("localhost:8000", "192.168.43.126");
+        return product_img.replace("http://localhost:8000/", Common.idServer);
     }
 
     public void setProduct_img(String product_img) {

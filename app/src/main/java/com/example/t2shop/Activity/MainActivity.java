@@ -2,6 +2,7 @@ package com.example.t2shop.Activity;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.room.Room;
 import androidx.viewpager.widget.ViewPager;
 
@@ -9,9 +10,11 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.widget.Toast;
 
 import com.example.t2shop.Adapter.MainViewPagerAdapter;
 import com.example.t2shop.Common.Constants;
+import com.example.t2shop.Common.KeyboardWatcher;
 import com.example.t2shop.Database.ItemCartDatabase;
 import com.example.t2shop.Database.ProductDatabase;
 import com.example.t2shop.Database.PromotionDatabase;
@@ -20,10 +23,11 @@ import com.example.t2shop.Fragment.HomeFragment;
 import com.example.t2shop.Fragment.NotificationFragment;
 import com.example.t2shop.Fragment.PersonalFragment;
 import com.example.t2shop.Fragment.SearchFragment;
+import com.example.t2shop.Interface.IOnBackPressed;
 import com.example.t2shop.R;
 import com.google.android.material.tabs.TabLayout;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     public static TabLayout tabLayout;
     private ViewPager viewPager;

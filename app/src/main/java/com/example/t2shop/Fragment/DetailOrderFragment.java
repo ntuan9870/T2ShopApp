@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +39,13 @@ public class DetailOrderFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_order, container, false);
+        LinearLayout rl_root = view.findViewById(R.id.ln_root);
+        rl_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         img_back = view.findViewById(R.id.img_back);
         rc_detail_order = view.findViewById(R.id.rc_detail_order);
         txt_total_price = view.findViewById(R.id.txt_total_price);

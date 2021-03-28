@@ -47,6 +47,13 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_register, container, false);
+        NestedScrollView scroll_register = view.findViewById(R.id.scroll_register);
+        scroll_register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         txt_email_register = view.findViewById(R.id.txt_email_register);
         txt_password_register = view.findViewById(R.id.txt_password_register);
         txt_re_password_register = view.findViewById(R.id.txt_re_password_register);

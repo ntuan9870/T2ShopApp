@@ -59,7 +59,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         dsc = dsc.replace("</p>", "");
         holder.txt_name_home_product.setText(p.getProduct_name() + " là " + dsc);
         holder.txt_promotion_home_product.setText("- " + promotion.getPromotion_infor() +"%");
-        holder.rating_home_product.setRating(Integer.parseInt(arrRatings.get(position)));
+        holder.rating_home_product.setRating(Float.parseFloat(arrRatings.get(position)));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

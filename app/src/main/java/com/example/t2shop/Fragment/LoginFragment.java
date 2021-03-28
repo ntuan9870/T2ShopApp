@@ -56,6 +56,13 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
+        NestedScrollView rl_root = view.findViewById(R.id.scrollView);
+        rl_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         img_close_login = view.findViewById(R.id.img_close_login);
         edt_email = view.findViewById(R.id.edt_email);
         edt_password = view.findViewById(R.id.edt_password);
@@ -118,18 +125,18 @@ public class LoginFragment extends Fragment {
         if (edt_password.getText().equals("")){
             edt_password.setError("Vui lòng nhập mật khẩu");
         }
-        edt_email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                changeKeyboardState();
-            }
-        });
-        edt_password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                changeKeyboardState();
-            }
-        });
+//        edt_email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                changeKeyboardState();
+//            }
+//        });
+//        edt_password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+//            @Override
+//            public void onFocusChange(View v, boolean hasFocus) {
+//                changeKeyboardState();
+//            }
+//        });
         edt_email.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -186,19 +193,18 @@ public class LoginFragment extends Fragment {
                             PersonalFragment.txt_name_1.setText(user.getUser_email());
                             PersonalFragment.btn_log_out.setVisibility(View.VISIBLE);
                             Bundle bundle = getArguments();
-                            Toast.makeText(getContext(), "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                            if (bundle.getString("checkouting")!=null){
+                            try {
+                                String str= bundle.getString("checkouting");
                                 FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
                                 CheckoutFragment checkoutFragment = new CheckoutFragment();
                                 transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
                                 transaction.replace(R.id.main_frame, checkoutFragment);
                                 transaction.commit();
-                            }else {
+                            }catch (Exception e){
                                 getFragmentManager().popBackStack();
                             }
                         }else {
-                            Toast.makeText(getContext(), "Email hoặc mật khẩu chưa đúng!", Toast.LENGTH_SHORT).show();
-                            Common2.confirmDialog(getContext(), "Tên hoặc mật khẩu chưa đúng", "Lưu ý: Nếu nhập sai quá 3 lần bạn sẽ bị chuyển sang quên mật khẩu!","Tôi hiểu rồi");
+                            Common2.confirmDialog(getContext(), "Email hoặc mật khẩu chưa đúng!", "Lưu ý: Nếu nhập sai quá 3 lần bạn sẽ bị chuyển sang quên mật khẩu!","Tôi hiểu rồi");
                         }
                     }
                 }, new Consumer<Throwable>() {

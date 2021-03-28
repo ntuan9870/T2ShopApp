@@ -26,6 +26,7 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.t2shop.Activity.MainActivity;
@@ -95,6 +96,13 @@ public class HomeFragment extends Fragment {
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         );
         view = inflater.inflate(R.layout.fragment_home, container, false);
+        RelativeLayout rl_root = view.findViewById(R.id.ln_root);
+        rl_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         Toolbar toolbar = (Toolbar) view.findViewById(R.id.toolbar);
         ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
         //Init

@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
@@ -53,6 +55,13 @@ public class ResetPasswordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_reset_password, container, false);
+        LinearLayout rl_root = view.findViewById(R.id.ln_root);
+        rl_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 //        edt_old_password = view.findViewById(R.id.edt_old_password);
         edt_re_new_password = view.findViewById(R.id.edt_re_new_password);
         edt_new_password = view.findViewById(R.id.edt_new_password);

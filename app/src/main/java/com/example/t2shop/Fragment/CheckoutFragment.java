@@ -11,7 +11,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,6 +85,13 @@ public class CheckoutFragment extends Fragment {
         compositeDisposable = new CompositeDisposable();
         addressAPI = RetrofitAPIAddress.getAPI();
         View view = inflater.inflate(R.layout.fragment_check_out, container, false);
+        RelativeLayout rl_root = view.findViewById(R.id.ln_root);
+        rl_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         text_input_user_name = view.findViewById(R.id.text_input_user_name);
         text_input_phone_number = view.findViewById(R.id.text_input_phone_number);
         text_input_user_address = view.findViewById(R.id.text_input_user_address);
@@ -227,7 +236,7 @@ public class CheckoutFragment extends Fragment {
                     public void accept(ResponseAllVoucher responseAllVoucher) throws Exception {
                         voucherList = responseAllVoucher.getVouchers();
                         ArrayList<String> arrOptions = new ArrayList<>();
-                        arrOptions.add("Khong chon Voucher");
+                        arrOptions.add("Không chọn Voucher");
                         for (int i = 0; i < responseAllVoucher.getVouchers().size(); i++){
                             arrOptions.add(responseAllVoucher.getVouchers().get(i).getVoucher_name());
                         }
@@ -302,6 +311,7 @@ public class CheckoutFragment extends Fragment {
                                 @Override
                                 public void accept(ResponseMessage responseMessage) throws Exception {
                                     dialogLoading.dismiss();
+                                    ItemCartDatabase.getInstance(getContext()).itemCartDAO().deleteAll();
                                     AlertDialog.Builder mSuccess = new AlertDialog.Builder(getActivity());
                                     View mView = getLayoutInflater().inflate(R.layout.dialog_complete_checkout, null);
                                     Button btn_success = mView.findViewById(R.id.btn_success);

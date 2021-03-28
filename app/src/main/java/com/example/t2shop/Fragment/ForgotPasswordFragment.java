@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.t2shop.Common.Common;
@@ -23,6 +24,8 @@ import com.example.t2shop.Common.Common2;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseMessage;
 import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.concurrent.TimeUnit;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -41,6 +44,13 @@ public class ForgotPasswordFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
+        LinearLayout rl_root = view.findViewById(R.id.ln_root);
+        rl_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         img_back = view.findViewById(R.id.img_back);
         edt_email = view.findViewById(R.id.edt_email);
         edt_code = view.findViewById(R.id.edt_code);
@@ -95,15 +105,17 @@ public class ForgotPasswordFragment extends Fragment {
                                 if (responseMessage.getMessage().equals("success")){
                                     Common2.showDialogAutoClose(getContext(), "Bạn có 180s để nhập mã!");
                                     new CountDownTimer(180000, 1000) {
-
                                         public void onTick(long millisUntilFinished) {
-                                            txt_time_count_down.setText("" + millisUntilFinished / 1000);
+                                            String s = String.format("%02d:%02d:%02d",
+                                                    TimeUnit.MILLISECONDS.toHours(millisUntilFinished)%60,
+                                                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)%60,
+                                                    TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60);
+                                            txt_time_count_down.setText("" + s);
                                         }
 
                                         public void onFinish() {
                                             txt_time_count_down.setText("Chờ..");
                                         }
-
                                     }.start();
                                 }else if (responseMessage.getMessage().equals("fail")){
                                     Common2.showDialogAutoClose(getContext(), "Email không tồn tại trong hệ thống!");
@@ -118,7 +130,8 @@ public class ForgotPasswordFragment extends Fragment {
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            Common2.showDialogAutoClose(getContext(), "Lỗi kết nối");
+                            sweetAlertDialog.dismiss();
+                            Common2.showDialogAutoClose(getContext(), "Lỗi kết nối"+throwable.getMessage());
                         }
                     }));
                 }
@@ -156,6 +169,8 @@ public class ForgotPasswordFragment extends Fragment {
                                             Common2.showDialogAutoClose(getContext(), "Bạn cần đợi thêm 3 phút kể từ thời điểm kết thúc thời gian nhập mã cũ!");
                                         }else if (responseMessage.getMessage().equals("error")){
                                             Common2.showDialogAutoClose(getContext(), "Có lỗi, vui lòng thử lại!");
+                                        }else if (responseMessage.getMessage().equals("clear")){
+                                            Common2.showDialogAutoClose(getContext(), "Bạn chưa nhấn gửi Mail");
                                         }
                                         sweetAlertDialog.dismiss();
                                     }

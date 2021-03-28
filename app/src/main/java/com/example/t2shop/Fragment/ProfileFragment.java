@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.t2shop.Common.Common;
@@ -41,6 +43,13 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         user = UserDatabase.getInstance(getContext()).userDAO().getItems();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+        LinearLayout rl_root = view.findViewById(R.id.ln_root);
+        rl_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         edt_username = view.findViewById(R.id.edt_username);
         edt_email = view.findViewById(R.id.edt_email);
         img_back = view.findViewById(R.id.img_back);

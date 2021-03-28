@@ -38,6 +38,13 @@ public class OrderManagerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_order_manager, container, false);
+        LinearLayout rl_root = view.findViewById(R.id.ln_root);
+        rl_root.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         img_back = view.findViewById(R.id.img_back);
         rc_order_manager = view.findViewById(R.id.rc_order_manager);
         txt_nothing = view.findViewById(R.id.txt_nothing);

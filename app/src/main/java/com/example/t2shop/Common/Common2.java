@@ -32,7 +32,7 @@ public class Common2 {
                         sDialog.dismissWithAnimation();
                     }
                 })
-                .setCancelButton("Cancel", new SweetAlertDialog.OnSweetClickListener() {
+                .setCancelButton("Hủy", new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sDialog) {
                         sDialog.dismissWithAnimation();
@@ -58,7 +58,7 @@ public class Common2 {
     public static SweetAlertDialog loadingDialog(Context context, String message){
         SweetAlertDialog pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
-        pDialog.setTitleText("Loading ...");
+        pDialog.setTitleText(message + " ...");
         pDialog.setCancelable(true);
         return pDialog;
     }

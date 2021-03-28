@@ -24,4 +24,6 @@ public interface ItemCartDAO {
     ItemCart getItemById(Long id);
     @Query("SELECT SUM(amount) FROM itemcarts")
     int getAmount();
+    @Query("DELETE FROM itemcarts")
+    void deleteAll();
 }

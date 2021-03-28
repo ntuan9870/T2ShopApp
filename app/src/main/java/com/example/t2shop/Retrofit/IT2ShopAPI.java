@@ -1,5 +1,8 @@
 package com.example.t2shop.Retrofit;
 
+import com.example.t2shop.Model.Category;
+import com.example.t2shop.Model.Comment;
+import com.example.t2shop.Response.ResponseComment;
 import com.example.t2shop.Response.ResponseOrder;
 import com.example.t2shop.Response.ResponseOrderItem;
 import com.example.t2shop.Response.ResponseProduct;
@@ -12,6 +15,7 @@ import com.example.t2shop.Response.ResponseMessage;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
+import retrofit2.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -22,8 +26,24 @@ public interface IT2ShopAPI {
     Observable<ResponseProduct> getNewProduct();
     @GET("getFeaturedProduct")
     Observable<ResponseProduct> getFeaturedProduct();
-    @GET("getratingall")
-    Observable<ResponseRatingAll> getRatingAll();
+    @POST("getratingall")
+    @FormUrlEncoded
+    Observable<ResponseRatingAll> getRatingAll(@Field("product_id")int product_id);
+    @POST("danhgia")
+    @FormUrlEncoded
+    Observable<ResponseMessage> addRating(@Field("user_id")int user_id, @Field("product_id")int product_id, @Field("rating")int rating);
+    @POST("getratingelement")
+    @FormUrlEncoded
+    Observable<ResponseMessage> getRating(@Field("user_id")int user_id, @Field("product_id")int product_id);
+    @POST("addComment")
+    @FormUrlEncoded
+    Observable<ResponseMessage> addComment(@Field("user_id")int user_id, @Field("product_id")int product_id, @Field("comment_content")String comment_content);
+    @POST("getComment")
+    @FormUrlEncoded
+    Observable<ResponseComment> getComment(@Field("product_id")int product_id);
+    @POST("removeComment")
+    @FormUrlEncoded
+    Observable<ResponseMessage> removeComment(@Field("comment_id")int comment_id);
     @POST("voucher/getallvoucherforuser")
     @FormUrlEncoded
     Observable<ResponseAllVoucher> getAllVoucher(@Field("user_id") int user_id);
@@ -40,6 +60,9 @@ public interface IT2ShopAPI {
                                          @Field("total") String total, @Field("form") String form, @Field("select_voucher") String select_voucher);
     @GET("category/show")
     Observable<ResponseCategory> getAllCategory();
+    @POST("category/getEdit")
+    @FormUrlEncoded
+    Observable<Category> getEditCategory(@Field("id") int id);
     @POST("show")
     @FormUrlEncoded
     Observable<ResponseProduct> getCategoryByID(@Field("id") int id, @Field("sl_featured") int sl_featured, @Field("sl_filter") int sl_filter);

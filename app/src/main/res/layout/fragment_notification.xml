@@ -6,7 +6,8 @@
     tools:context=".Fragment.NotificationFragment"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:weightSum="16">
+    android:weightSum="16"
+    android:id="@+id/ln_root">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

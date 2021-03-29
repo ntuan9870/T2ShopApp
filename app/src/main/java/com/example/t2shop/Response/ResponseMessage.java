@@ -1,10 +1,13 @@
 package com.example.t2shop.Response;
 
+import com.example.t2shop.Model.User;
+
 public class ResponseMessage {
     private String success;
     private String error;
     private String message;
     private String code;
+    private User user;
 
     public ResponseMessage() {
     }
@@ -39,5 +42,13 @@ public class ResponseMessage {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

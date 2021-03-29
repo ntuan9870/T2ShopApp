@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Adapter.CartItemAdapter;
 import com.example.t2shop.Common.Common;
+import com.example.t2shop.Common.Common2;
 import com.example.t2shop.DAO.ItemCartDAO;
 import com.example.t2shop.Database.ItemCartDatabase;
 import com.example.t2shop.Database.UserDatabase;
@@ -52,7 +53,7 @@ public class CartFragment extends Fragment {
     private RecyclerView rc_cart;
     private ImageView btn_exit_cart;
     public static String TAG = CartFragment.class.getName();
-    public static TextView txt_title_cart, txt_sum_price;
+    public static TextView txt_title_cart, txt_sum_price, txt_nothing;
     public static int sum_price = 0;
     private Button btn_buy;
 
@@ -61,6 +62,7 @@ public class CartFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
         RelativeLayout rl_root = view.findViewById(R.id.ln_root);
+        txt_nothing = view.findViewById(R.id.txt_nothing);
         rl_root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,6 +78,11 @@ public class CartFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rc_cart.setLayoutManager(layoutManager);
         rc_cart.setAdapter(cartItemAdapter);
+        if (items.size()==0){
+            txt_nothing.setVisibility(View.VISIBLE);
+        }else{
+            txt_nothing.setVisibility(View.INVISIBLE);
+        }
         txt_sum_price = view.findViewById(R.id.txt_sum_price);
         int sum = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getAmount();
         List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
@@ -100,23 +107,27 @@ public class CartFragment extends Fragment {
         btn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (user==null){
-                    Bundle bundle = new Bundle();
-                    bundle.putString("checkouting", "yes");
-                    FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
-                    LoginFragment loginFragment = new LoginFragment();
-                    loginFragment.setArguments(bundle);
-                    transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
-                    transaction.replace(R.id.main_frame, loginFragment);
-                    transaction.addToBackStack(LoginFragment.TAG);
-                    transaction.commit();
+                if (cartItemAdapter.getArrItems().size()!=0){
+                    if (user==null){
+                        Bundle bundle = new Bundle();
+                        bundle.putString("checkouting", "yes");
+                        FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                        LoginFragment loginFragment = new LoginFragment();
+                        loginFragment.setArguments(bundle);
+                        transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                        transaction.replace(R.id.main_frame, loginFragment);
+                        transaction.addToBackStack(LoginFragment.TAG);
+                        transaction.commit();
+                    }else{
+                        FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                        CheckoutFragment checkoutFragment = new CheckoutFragment();
+                        transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                        transaction.replace(R.id.main_frame, checkoutFragment);
+                        transaction.addToBackStack(CheckoutFragment.TAG);
+                        transaction.commit();
+                    }
                 }else{
-                    FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
-                    CheckoutFragment checkoutFragment = new CheckoutFragment();
-                    transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
-                    transaction.replace(R.id.main_frame, checkoutFragment);
-                    transaction.addToBackStack(CheckoutFragment.TAG);
-                    transaction.commit();
+                    Common2.confirmDialog(getContext(), "Hãy thêm sản phẩm!", "Tất nhiên bạn không thể đặt hàng nếu không có sản phẩm! :)", "OK");
                 }
             }
         });

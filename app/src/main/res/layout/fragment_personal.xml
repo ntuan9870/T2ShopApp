@@ -223,15 +223,21 @@
                         android:layout_gravity="center_vertical"/>
                 </LinearLayout>
             </LinearLayout>
-            <Button
-                android:id="@+id/btn_log_out"
-                android:layout_below="@+id/ln_options_personal"
+            <RelativeLayout
+                android:id="@+id/rl_log_out"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="ĐĂNG XUẤT"
-                android:background="@drawable/btn_log_out"
-                android:textColor="#003EDC"/>
+                android:layout_below="@+id/ln_options_personal"
+                android:background="#E6E6E6">
+                <Button
+                    android:id="@+id/btn_log_out"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:text="ĐĂNG XUẤT"
+                    android:background="@drawable/btn_log_out"
+                    android:textColor="#003EDC"/>
+            </RelativeLayout>
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

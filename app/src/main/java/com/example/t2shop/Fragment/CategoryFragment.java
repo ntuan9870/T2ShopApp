@@ -36,7 +36,7 @@ import io.reactivex.schedulers.Schedulers;
 public class CategoryFragment extends Fragment {
 
     private RecyclerView rc_category, rc_category_detail;
-    private TextView txt_category_name, txt_nothing;
+    private TextView txt_category_name, txt_nothing;    
     private Spinner filter_price, filter_featured;
     private int sl_pr = 0, sl_fe = 0, id_ca = 2;
 

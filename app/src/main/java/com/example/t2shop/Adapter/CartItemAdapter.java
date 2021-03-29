@@ -111,6 +111,11 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
                 getArrItems().remove(position);
                 notifyItemRangeChanged(position, getItemCount());
                 animateHeight((View) holder.itemView.getParent(), holder.itemView.getMeasuredHeight());
+                if (getArrItems().size()==0){
+                    CartFragment.txt_nothing.setVisibility(View.VISIBLE);
+                }else{
+                    CartFragment.txt_nothing.setVisibility(View.INVISIBLE);
+                }
             }
         });
     }

@@ -13,9 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="12"
         android:padding="20dp"
-        android:background="#ECECEC"
+        android:background="@color/white"
         android:id="@+id/rl_login">
         <ImageView
             android:id="@+id/img_close_login"
@@ -24,9 +23,9 @@
             android:layout_height="30dp"
             android:layout_marginTop="10dp"/>
         <RelativeLayout
+            android:layout_below="@+id/img_close_login"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="4"
+            android:layout_height="100dp"
             android:id="@+id/rl_logo">
             <TextView
                 android:id="@+id/txt_login"
@@ -39,97 +38,37 @@
                 android:textStyle="bold"
                 android:textColor="#003193"/>
         </RelativeLayout>
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1.3"
-            android:layout_marginTop="25dp">
-            <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edt_email"
+            app:errorEnabled="true"
+            android:background="@color/white">
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:weightSum="100"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="15"
-                    android:layout_marginLeft="5dp"
-                    android:src="@drawable/ic_baseline_email_24"
-                    android:layout_gravity="center_vertical"/>
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="#AFAFAF"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="5dp"/>
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="80"
-                    xmlns:app="http://schemas.android.com/apk/res-auto">
-                    <EditText
-                        android:id="@+id/edt_email"
-                        android:layout_marginLeft="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
-                        android:hint="Email.."
-                        android:background="@color/white"
-                        android:singleLine="true"
-                        android:inputType="textEmailAddress"/>
-                </RelativeLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-        <androidx.cardview.widget.CardView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1.3"
-            android:layout_marginTop="25dp">
-            <LinearLayout
+                android:layout_height="wrap_content"
+                android:hint="Email.."
+                android:inputType="textEmailAddress"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/edt_password"
+            app:errorEnabled="true"
+            android:background="@color/white"
+            app:passwordToggleEnabled="true">
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:weightSum="100"
-                android:orientation="horizontal">
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_height="30dp"
-                    android:layout_weight="15"
-                    android:layout_marginLeft="5dp"
-                    android:src="@drawable/ic_baseline_vpn_key_24"
-                    android:layout_gravity="center_vertical"/>
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:background="#AFAFAF"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="5dp"/>
-                <RelativeLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="80"
-                    xmlns:app="http://schemas.android.com/apk/res-auto">
-                    <com.example.t2shop.CustomView.PasswordEditText
-                        android:id="@+id/edt_password"
-                        android:layout_marginLeft="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_alignParentRight="true"
-                        android:hint="Mật khẩu.."
-                        android:background="@color/white"
-                        android:inputType="textPassword"
-                        app:useStrike="true"
-                        android:singleLine="true"/>
-                </RelativeLayout>
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
+                android:layout_height="wrap_content"
+                android:hint="Mật khẩu.."
+                android:inputType="textPassword"/>
+        </com.google.android.material.textfield.TextInputLayout>
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1.3"
+            android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            app:cardCornerRadius="5dp">
+            app:cardCornerRadius="5dp"
+            android:padding="5dp">
             <Button
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
@@ -143,7 +82,7 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="20dp">
             <TextView
                 android:layout_toLeftOf="@+id/txt_register_login"
                 android:layout_width="wrap_content"
@@ -173,5 +112,44 @@
                 android:textColor="#001EB8"
                 android:textStyle="bold"/>
         </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+            <View
+                android:layout_centerVertical="true"
+                android:background="#D5D5D5"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hoặc đăng nhập bằng"
+                android:textSize="15sp"
+                android:textColor="#3C3C3C"
+                android:layout_centerInParent="true"
+                android:background="@color/white"/>
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp">
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"/>
+            <ImageView
+                android:id="@+id/img_login_gg"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/gglogo"
+                android:layout_marginLeft="10dp"
+                android:layout_gravity="center_horizontal"/>
+        </LinearLayout>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

@@ -24,6 +24,14 @@
                 android:layout_height="wrap_content"
                 android:layoutAnimation="@anim/layout_animation"
                 android:background="#E8E8E8"/>
+            <TextView
+                android:id="@+id/txt_nothing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textColor="#ff00"
+                android:text="Không có gì trong giỏ hàng cả!"
+                android:layout_centerInParent="true"/>
         </RelativeLayout>
     </androidx.core.widget.NestedScrollView>
     <RelativeLayout

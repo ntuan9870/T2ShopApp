@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.example.t2shop.Database.UserDatabase;
 import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
+import com.facebook.login.LoginManager;
 
 import java.util.List;
 
@@ -30,6 +32,9 @@ public class PersonalFragment extends Fragment {
     public static Button btn_log_out;
     private LinearLayout ln_order_profile, ln_change_password, ln_profile;
     public static String TAG = PersonalFragment.class.getName();
+    public static RelativeLayout rl_log_out;
+    private User user;
+    public static ImageView img_avatar_personal;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,32 +48,39 @@ public class PersonalFragment extends Fragment {
             }
         });
         txt_login_register = view.findViewById(R.id.txt_login_register);
+        img_avatar_personal = view.findViewById(R.id.img_avatar_personal);
         txt_name_1 = view.findViewById(R.id.txt_name_1);
         btn_log_out = view.findViewById(R.id.btn_log_out);
         ln_order_profile = view.findViewById(R.id.ln_order_profile);
         ln_change_password = view.findViewById(R.id.ln_change_password);
         ln_profile = view.findViewById(R.id.ln_profile);
-        User user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        rl_log_out = view.findViewById(R.id.rl_log_out);
+        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
         if (user==null){
             login();
         }else{
             btn_log_out.setVisibility(View.VISIBLE);
             txt_login_register.setText(user.getUser_name());
             txt_name_1.setText(user.getUser_email());
-            btn_log_out.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    UserDatabase.getInstance(getContext()).userDAO().delete(user);
-                    txt_login_register.setText("Đăng nhập/Đăng ký");
-                    txt_name_1.setText("Chào mừng bạn đến với T2Shop");
-                    Toast.makeText(getContext(), "Đã đăng xuất!", Toast.LENGTH_SHORT).show();
-                    login();
-                }
-            });
         }
+        btn_log_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user == null){
+                    user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+                }
+                UserDatabase.getInstance(getContext()).userDAO().delete(user);
+                txt_login_register.setText("Đăng nhập/Đăng ký");
+                txt_name_1.setText("Chào mừng bạn đến với T2Shop");
+                login();
+                LoginManager.getInstance().logOut();
+                Toast.makeText(getContext(), "Đã đăng xuất!", Toast.LENGTH_SHORT).show();
+            }
+        });
         ln_order_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                user = UserDatabase.getInstance(getContext()).userDAO().getItems();
                 if (user!=null) {
                     FragmentTransaction fragmentTransaction = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.addToBackStack(OrderManagerFragment.TAG);
@@ -84,6 +96,7 @@ public class PersonalFragment extends Fragment {
         ln_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                user = UserDatabase.getInstance(getContext()).userDAO().getItems();
                 if (user!=null) {
                     FragmentTransaction fragmentTransaction = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.addToBackStack(ProfileFragment.TAG);
@@ -99,6 +112,7 @@ public class PersonalFragment extends Fragment {
         ln_change_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                user = UserDatabase.getInstance(getContext()).userDAO().getItems();
                 if (user!=null) {
                     FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.addToBackStack(ResetPasswordFragment.TAG);
@@ -115,7 +129,6 @@ public class PersonalFragment extends Fragment {
     }
 
     private void login() {
-        btn_log_out.setVisibility(View.GONE);
         txt_login_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,5 +140,7 @@ public class PersonalFragment extends Fragment {
                 transaction.commit();
             }
         });
+        rl_log_out.setBackgroundColor(0xFFFFFFFF);
+        btn_log_out.setVisibility(View.INVISIBLE);
     }
 }

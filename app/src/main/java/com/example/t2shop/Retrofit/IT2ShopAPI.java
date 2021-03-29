@@ -50,6 +50,9 @@ public interface IT2ShopAPI {
     @POST("auth/login")
     @FormUrlEncoded
     Observable<ResponseLogin> login(@Field("user_email") String user_email, @Field("user_password") String user_password);
+    @POST("auth/checkemailSocial")
+    @FormUrlEncoded
+    Observable<ResponseMessage> checkEmailSocial(@Field("email") String email, @Field("name") String name);
     @POST("auth/register")
     @FormUrlEncoded
     Observable<ResponseMessage> register(@Field("user_name") String user_name, @Field("user_password") String user_password, @Field("user_email") String user_email, @Field("user_phone") String user_phone);

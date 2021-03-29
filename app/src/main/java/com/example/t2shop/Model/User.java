@@ -32,6 +32,10 @@ public class User {
         this.updated_at = updated_at;
     }
 
+    public User() {
+
+    }
+
     public int getUser_id() {
         return user_id;
     }

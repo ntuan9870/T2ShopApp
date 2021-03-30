@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -24,6 +25,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
 import com.example.t2shop.Common.RetrofitAPIAddress;
@@ -77,6 +79,8 @@ public class CheckoutFragment extends Fragment {
     private int idSL = -1;
     private List<Voucher> voucherList;
     private User user;
+    private ImageView img_momo;
+    private CheckBox cb_momo;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -104,6 +108,8 @@ public class CheckoutFragment extends Fragment {
         spinner_ward = view.findViewById(R.id.spinner_ward);
         img_back_check_out = view.findViewById(R.id.img_back_check_out);
         btn_buy = view.findViewById(R.id.btn_buy);
+        img_momo = view.findViewById(R.id.img_momo);
+        cb_momo = view.findViewById(R.id.cb_momo);
         List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
         sum_price = 0;
         for (int i = 0; i < itemCarts.size(); i++){
@@ -299,44 +305,48 @@ public class CheckoutFragment extends Fragment {
                     }else{
                         voucher_id = voucherList.get(idSL).getVoucher_id()+"";
                     }
-
-                    String address = text_input_user_address.getEditText().getText().toString().trim()+" - "+text_input_user_address_ward.getEditText().getText().toString().trim()+" - "
-                            +text_input_user_address_ward.getEditText().getText().toString().trim()+ " - "+ text_input_user_address_city.getEditText().getText().toString();
-                    compositeDisposable.add(Common.it2ShopAPI.addOrder(jsonArray.toString(), user.getUser_id()+"", text_input_user_name.getEditText().getText().toString(),
-                            text_input_phone_number.getEditText().getText().toString(), "", address, sum_price+"", "Trực tiếp",
-                            voucher_id)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Consumer<ResponseMessage>() {
-                                @Override
-                                public void accept(ResponseMessage responseMessage) throws Exception {
-                                    dialogLoading.dismiss();
-                                    ItemCartDatabase.getInstance(getContext()).itemCartDAO().deleteAll();
-                                    AlertDialog.Builder mSuccess = new AlertDialog.Builder(getActivity());
-                                    View mView = getLayoutInflater().inflate(R.layout.dialog_complete_checkout, null);
-                                    Button btn_success = mView.findViewById(R.id.btn_success);
-                                    mSuccess.setView(mView);
-                                    AlertDialog dialog = mSuccess.create();
-                                    dialog.show();
-                                    btn_success.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            FragmentManager fm = getActivity().getSupportFragmentManager();
-                                            for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
-                                                fm.popBackStack();
+                    if (!cb_momo.isChecked()) {
+                        String address = text_input_user_address.getEditText().getText().toString().trim() + " - " + text_input_user_address_ward.getEditText().getText().toString().trim() + " - "
+                                + text_input_user_address_ward.getEditText().getText().toString().trim() + " - " + text_input_user_address_city.getEditText().getText().toString();
+                        compositeDisposable.add(Common.it2ShopAPI.addOrder(jsonArray.toString(), user.getUser_id() + "", text_input_user_name.getEditText().getText().toString(),
+                                text_input_phone_number.getEditText().getText().toString(), "", address, sum_price + "", "Trực tiếp",
+                                voucher_id)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Consumer<ResponseMessage>() {
+                                    @Override
+                                    public void accept(ResponseMessage responseMessage) throws Exception {
+                                        dialogLoading.dismiss();
+                                        ItemCartDatabase.getInstance(getContext()).itemCartDAO().deleteAll();
+                                        AlertDialog.Builder mSuccess = new AlertDialog.Builder(getActivity());
+                                        View mView = getLayoutInflater().inflate(R.layout.dialog_complete_checkout, null);
+                                        Button btn_success = mView.findViewById(R.id.btn_success);
+                                        mSuccess.setView(mView);
+                                        AlertDialog dialog = mSuccess.create();
+                                        dialog.show();
+                                        btn_success.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                FragmentManager fm = getActivity().getSupportFragmentManager();
+                                                for (int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                                                    fm.popBackStack();
+                                                }
+                                                dialog.dismiss();
                                             }
-                                            dialog.dismiss();
-                                        }
-                                    });
-                                }
-                            }, new Consumer<Throwable>() {
-                                @Override
-                                public void accept(Throwable throwable) throws Exception {
-                                }
-                            }));
+                                        });
+                                    }
+                                }, new Consumer<Throwable>() {
+                                    @Override
+                                    public void accept(Throwable throwable) throws Exception {
+                                    }
+                                }));
+                    }else{
+
+                    }
                 }
             }
         });
+        Glide.with(getContext()).load("https://img.mservice.io/momo-payment/icon/images/logo512.png").into(img_momo);
         return view;
     }
 

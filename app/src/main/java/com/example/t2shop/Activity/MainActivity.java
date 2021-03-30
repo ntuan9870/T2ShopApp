@@ -25,6 +25,7 @@ import com.example.t2shop.Fragment.PersonalFragment;
 import com.example.t2shop.Fragment.SearchFragment;
 import com.example.t2shop.Interface.IOnBackPressed;
 import com.example.t2shop.R;
+import com.facebook.FacebookSdk;
 import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity{
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity{
         this.getWindowManager().getDefaultDisplay().getMetrics(dm);
         Constants.SCREEN_WIDTH = dm.widthPixels;
         Constants.SCREEN_HEIGHT = dm.heightPixels;
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
         AnhXa();
         init();

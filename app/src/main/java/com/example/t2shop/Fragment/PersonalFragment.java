@@ -34,7 +34,7 @@ public class PersonalFragment extends Fragment {
     public static String TAG = PersonalFragment.class.getName();
     public static RelativeLayout rl_log_out;
     private User user;
-    public static ImageView img_avatar_personal;
+    public static ImageView img_avatar_personal, img_cart_personal;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -55,6 +55,18 @@ public class PersonalFragment extends Fragment {
         ln_change_password = view.findViewById(R.id.ln_change_password);
         ln_profile = view.findViewById(R.id.ln_profile);
         rl_log_out = view.findViewById(R.id.rl_log_out);
+        img_cart_personal = view.findViewById(R.id.img_cart_personal);
+        img_cart_personal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                CartFragment cartFragment = new CartFragment();
+                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                transaction.replace(R.id.main_frame, cartFragment);
+                transaction.addToBackStack(CartFragment.TAG);
+                transaction.commit();
+            }
+        });
         user = UserDatabase.getInstance(getContext()).userDAO().getItems();
         if (user==null){
             login();

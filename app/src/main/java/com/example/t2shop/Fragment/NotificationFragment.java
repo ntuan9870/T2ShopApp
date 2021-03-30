@@ -2,7 +2,9 @@ package com.example.t2shop.Fragment;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -10,6 +12,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -31,11 +34,24 @@ import io.reactivex.schedulers.Schedulers;
 public class NotificationFragment extends Fragment {
     private RecyclerView rc_vouchers;
     private TextView check_login;
+    private ImageView img_cart_notification;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
         LinearLayout rl_root = view.findViewById(R.id.ln_root);
+        img_cart_notification = view.findViewById(R.id.img_cart_notification);
+        img_cart_notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                CartFragment cartFragment = new CartFragment();
+                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                transaction.replace(R.id.main_frame, cartFragment);
+                transaction.addToBackStack(CartFragment.TAG);
+                transaction.commit();
+            }
+        });
         rl_root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

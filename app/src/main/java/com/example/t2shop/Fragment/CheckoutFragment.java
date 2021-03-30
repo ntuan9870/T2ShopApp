@@ -1,5 +1,7 @@
 package com.example.t2shop.Fragment;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -26,6 +28,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.example.t2shop.Activity.MainActivity;
+import com.example.t2shop.Activity.MoMoActivity;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
 import com.example.t2shop.Common.RetrofitAPIAddress;
@@ -341,13 +345,20 @@ public class CheckoutFragment extends Fragment {
                                     }
                                 }));
                     }else{
-
+//                        goToURL("https://facebook.com");
+                        Intent intent = new Intent(getActivity(), MoMoActivity.class);
+                        startActivity(intent);
                     }
                 }
             }
         });
         Glide.with(getContext()).load("https://img.mservice.io/momo-payment/icon/images/logo512.png").into(img_momo);
         return view;
+    }
+
+    private void goToURL(String s) {
+        Uri uri = Uri.parse(s);
+        startActivity(new Intent(Intent.ACTION_VIEW, uri));
     }
 
     private boolean validateWard() {

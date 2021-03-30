@@ -3,7 +3,9 @@ package com.example.t2shop.Fragment;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -14,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +42,7 @@ public class CategoryFragment extends Fragment {
     private TextView txt_category_name, txt_nothing;    
     private Spinner filter_price, filter_featured;
     private int sl_pr = 0, sl_fe = 0, id_ca = 2;
+    private ImageView img_cart_notification;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,6 +61,7 @@ public class CategoryFragment extends Fragment {
         filter_price = view.findViewById(R.id.filter_price);
         filter_featured = view.findViewById(R.id.filter_featured);
         txt_nothing = view.findViewById(R.id.txt_nothing);
+        img_cart_notification = view.findViewById(R.id.img_cart_notification);
         ArrayList<String> arrOptionPrices = new ArrayList<>();
         arrOptionPrices.add("Giá tăng dần");
         arrOptionPrices.add("Giá giảm dần");
@@ -128,6 +133,17 @@ public class CategoryFragment extends Fragment {
             }
         }));
         fetchProductDetail(id_ca, sl_fe, sl_pr);
+        img_cart_notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                CartFragment cartFragment = new CartFragment();
+                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                transaction.replace(R.id.main_frame, cartFragment);
+                transaction.addToBackStack(CartFragment.TAG);
+                transaction.commit();
+            }
+        });
         return view;
     }
 

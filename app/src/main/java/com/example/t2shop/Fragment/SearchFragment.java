@@ -2,7 +2,9 @@ package com.example.t2shop.Fragment;
 
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -12,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,6 +33,7 @@ public class SearchFragment extends Fragment {
     private RecyclerView rc_search;
     private EditText edt_search;
     private TextView txt_nothing, txt_search;
+    private ImageView img_cart_notification;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,6 +50,18 @@ public class SearchFragment extends Fragment {
         edt_search = view.findViewById(R.id.edt_search);
         txt_nothing = view.findViewById(R.id.txt_nothing);
         txt_search = view.findViewById(R.id.txt_search);
+        img_cart_notification = view.findViewById(R.id.img_cart_notification);
+        img_cart_notification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                CartFragment cartFragment = new CartFragment();
+                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                transaction.replace(R.id.main_frame, cartFragment);
+                transaction.addToBackStack(CartFragment.TAG);
+                transaction.commit();
+            }
+        });
         edt_search.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

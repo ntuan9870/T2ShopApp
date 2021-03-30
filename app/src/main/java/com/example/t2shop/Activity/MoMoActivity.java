@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.example.t2shop.Common.MoMoConstants;
 import com.example.t2shop.R;
 
 public class MoMoActivity extends AppCompatActivity {
@@ -39,36 +40,36 @@ public class MoMoActivity extends AppCompatActivity {
 //                }
             }
         });
-//        payMoMo();
-//        linkMoMo();
+        payMoMo();
+        linkMoMo();
     }
 
-//    private void linkMoMo() {
-//        btnMappingMoMo.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent;
-//                Bundle data = new Bundle();
-//                intent = new Intent(MoMoActivity.this, MappingActivity.class);
-//                data.putInt(MoMoConstants.KEY_ENVIRONMENT, environment);
-//                intent.putExtras(data);
-//                startActivity(intent);
-//            }
-//        });
-//    }
-//
-//    private void payMoMo() {
-//        btnPaymentMoMo.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent;
-//                Bundle data = new Bundle();
-//                intent = new Intent(MoMoActivity.this, PaymentActivity.class);
-//                data.putInt(MoMoConstants.KEY_ENVIRONMENT, environment);
-//                intent.putExtras(data);
-//                startActivity(intent);
-//            }
-//        });
-//    }
+    private void linkMoMo() {
+        btnMappingMoMo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent;
+                Bundle data = new Bundle();
+                intent = new Intent(MoMoActivity.this, MappingActivity.class);
+                data.putInt(MoMoConstants.KEY_ENVIRONMENT, environment);
+                intent.putExtras(data);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private void payMoMo() {
+        btnPaymentMoMo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent;
+                Bundle data = new Bundle();
+                intent = new Intent(MoMoActivity.this, PaymentActivity.class);
+                data.putInt(MoMoConstants.KEY_ENVIRONMENT, environment);
+                intent.putExtras(data);
+                startActivity(intent);
+            }
+        });
+    }
 
 }

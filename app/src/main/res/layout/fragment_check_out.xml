@@ -84,7 +84,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Địa chỉ nhận hàng(số nhà, tên đường)"/>
+                    android:hint="Địa chỉ nhận hàng(số nhà, tên đường)"
+                    android:imeOptions="actionDone"/>
             </com.google.android.material.textfield.TextInputLayout>
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_marginTop="5dp"

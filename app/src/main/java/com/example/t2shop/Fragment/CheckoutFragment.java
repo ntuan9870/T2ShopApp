@@ -305,7 +305,7 @@ public class CheckoutFragment extends Fragment {
                     }
                     String voucher_id = "";
                     if(idSL<0){
-                        voucher_id = null;
+                        voucher_id = "null";
                     }else{
                         voucher_id = voucherList.get(idSL).getVoucher_id()+"";
                     }
@@ -342,6 +342,7 @@ public class CheckoutFragment extends Fragment {
                                 }, new Consumer<Throwable>() {
                                     @Override
                                     public void accept(Throwable throwable) throws Exception {
+                                        Log.d("AAA", throwable.getMessage());
                                     }
                                 }));
                     }else{

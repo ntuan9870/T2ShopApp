@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Quí khách đã đặt hàng thành công!"
-            android:textSize="20sp"
+            android:textSize="17sp"
             android:textColor="#0000A1"
             android:textAlignment="center"/>
     </RelativeLayout>
@@ -42,7 +42,9 @@
             android:textSize="20sp"
             android:textColor="@color/white"
             android:text="OK"
-            android:layout_centerInParent="true"/>
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
     </RelativeLayout>
 
 </LinearLayout>

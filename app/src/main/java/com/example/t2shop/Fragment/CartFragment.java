@@ -74,7 +74,7 @@ public class CartFragment extends Fragment {
         txt_title_cart = view.findViewById(R.id.txt_title_cart);
         btn_buy = view.findViewById(R.id.btn_buy);
         List<ItemCart> items = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
-        CartItemAdapter cartItemAdapter = new CartItemAdapter(getContext(), items);
+        CartItemAdapter cartItemAdapter = new CartItemAdapter(getContext(), items, getActivity());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         rc_cart.setLayoutManager(layoutManager);
         rc_cart.setAdapter(cartItemAdapter);

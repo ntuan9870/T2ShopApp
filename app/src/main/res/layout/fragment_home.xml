@@ -47,13 +47,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <ImageView
-                            app:tint="@color/white"
-                            android:id="@+id/img_shopping_cart"
-                            android:layout_alignParentRight="true"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:scaleType="fitXY"
-                            android:src="@drawable/ic_baseline_shopping_cart_24">
+                                app:tint="@color/white"
+                                android:id="@+id/img_shopping_cart"
+                                android:layout_alignParentRight="true"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:scaleType="fitXY"
+                                android:src="@drawable/ic_baseline_shopping_cart_24">
                         </ImageView>
                         <ImageView
                             app:tint="@android:color/white"

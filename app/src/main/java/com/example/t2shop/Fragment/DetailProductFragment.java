@@ -223,12 +223,13 @@ public class DetailProductFragment extends Fragment {
                     item.setProduct_description(product.getProduct_description());
                     item.setProduct_img(product.getProduct_img());
                     item.setPromotion_infor(promotion.getPromotion_infor());
+                    item.setProduct_amount(product.getProduct_amount());
                     item.setAmount(1);
                     ItemCartDatabase.getInstance(getContext()).itemCartDAO().insert(item);
                 }else{
                     ItemCartDatabase.getInstance(getContext()).itemCartDAO().update(itemCart);
                 }
-                Toast.makeText(getContext(), "Thêm sản phẩm vào giỏ hàng thành công!", Toast.LENGTH_SHORT).show();
+                Common2.showDialogAutoClose(getContext(), "Thêm sản phẩm vào giỏ hàng thành công!");
             }
         });
         img_shopping_cart_detail_product.setOnClickListener(new View.OnClickListener() {

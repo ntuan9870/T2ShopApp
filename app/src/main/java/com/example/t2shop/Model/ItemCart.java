@@ -12,6 +12,7 @@ public class ItemCart {
     private int product_id;
     private String product_name;
     private double product_price;
+    private int product_amount;
     private String product_img;
     private String product_description;
     private String promotion_infor;
@@ -94,5 +95,13 @@ public class ItemCart {
 
     public void setProduct_price(double product_price) {
         this.product_price = product_price;
+    }
+
+    public int getProduct_amount() {
+        return product_amount;
+    }
+
+    public void setProduct_amount(int product_amount) {
+        this.product_amount = product_amount;
     }
 }

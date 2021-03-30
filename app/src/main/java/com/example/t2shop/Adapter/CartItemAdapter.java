@@ -1,6 +1,9 @@
 package com.example.t2shop.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.transition.AutoTransition;
 import android.transition.Transition;
 import android.transition.TransitionManager;
@@ -17,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -29,6 +33,7 @@ import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.Product;
 import com.example.t2shop.Model.Promotion;
 import com.example.t2shop.R;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -38,10 +43,12 @@ import java.util.List;
 public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHolder> {
     private Context context;
     private List<ItemCart> arrItems;
+    private Activity activity;
 
-    public CartItemAdapter(Context context, List<ItemCart> arrItems) {
+    public CartItemAdapter(Context context, List<ItemCart> arrItems, Activity activity) {
         this.context = context;
         this.arrItems = arrItems;
+        this.activity = activity;
     }
 
     @NonNull
@@ -84,28 +91,36 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
                     holder.txt_price_product_cart.setText(price+" " + vnd);
                     CartFragment.sum_price-=itemCart.getProduct_price()*(100-Integer.parseInt(itemCart.getPromotion_infor()))/100;
                     CartFragment.txt_sum_price.setText(formatter.format(CartFragment.sum_price)+" "+vnd);
+                    int sum = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getAmount();
+                    CartFragment.txt_title_cart.setText("Giỏ hàng ("+sum+")");
                 }
             }
         });
         holder.btn_increase_number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                itemCart.setAmount(itemCart.getAmount()+1);
-                holder.txt_amount_product.setText(itemCart.getAmount()+"");
-                ItemCartDatabase.getInstance(getContext()).itemCartDAO().update(itemCart);
-                if (itemCart.getAmount()>1){
-                    holder.btn_decrease_number.setEnabled(true);
+                if (itemCart.getAmount()<itemCart.getProduct_amount()){
+                    itemCart.setAmount(itemCart.getAmount()+1);
+                    holder.txt_amount_product.setText(itemCart.getAmount()+"");
+                    ItemCartDatabase.getInstance(getContext()).itemCartDAO().update(itemCart);
+                    if (itemCart.getAmount()>1){
+                        holder.btn_decrease_number.setEnabled(true);
+                    }
+                    double pr = itemCart.getAmount()*(itemCart.getProduct_price()-(itemCart.getProduct_price()*Integer.parseInt(itemCart.getPromotion_infor()))/100);
+                    String price = formatter.format(pr);
+                    holder.txt_price_product_cart.setText(price+" " + vnd);
+                    CartFragment.sum_price+=itemCart.getProduct_price()*(100-Integer.parseInt(itemCart.getPromotion_infor()))/100;
+                    CartFragment.txt_sum_price.setText(formatter.format(CartFragment.sum_price)+" "+vnd);
+                    int sum = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getAmount();
+                    CartFragment.txt_title_cart.setText("Giỏ hàng ("+sum+")");
                 }
-                double pr = itemCart.getAmount()*(itemCart.getProduct_price()-(itemCart.getProduct_price()*Integer.parseInt(itemCart.getPromotion_infor()))/100);
-                String price = formatter.format(pr);
-                holder.txt_price_product_cart.setText(price+" " + vnd);
-                CartFragment.sum_price+=itemCart.getProduct_price()*(100-Integer.parseInt(itemCart.getPromotion_infor()))/100;
-                CartFragment.txt_sum_price.setText(formatter.format(CartFragment.sum_price)+" "+vnd);
             }
         });
         holder.img_cancel_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                CartFragment.sum_price-=itemCart.getAmount()*(itemCart.getProduct_price()*(100-Integer.parseInt(itemCart.getPromotion_infor()))/100);
+                CartFragment.txt_sum_price.setText(formatter.format(CartFragment.sum_price)+" "+vnd);
                 ItemCartDatabase.getInstance(context).itemCartDAO().delete(itemCart);
                 notifyItemRemoved(position);
                 getArrItems().remove(position);
@@ -116,6 +131,63 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
                 }else{
                     CartFragment.txt_nothing.setVisibility(View.INVISIBLE);
                 }
+                int sum = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getAmount();
+                CartFragment.txt_title_cart.setText("Giỏ hàng ("+sum+")");
+            }
+        });
+        holder.txt_amount_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder mChangeNumber = new AlertDialog.Builder(activity);
+                View mView = LayoutInflater.from(context).inflate(R.layout.dialog_change_number, null);
+                Button btn_submit = mView.findViewById(R.id.btn_submit);
+                TextInputLayout edt_number = mView.findViewById(R.id.edt_number);
+                mChangeNumber.setView(mView);
+                AlertDialog dialog = mChangeNumber.create();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+                edt_number.getEditText().setText(itemCart.getAmount()+"");
+                edt_number.getEditText().addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        validateNumber(edt_number);
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                });
+                btn_submit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (validateNumber(edt_number)){
+                            itemCart.setAmount(Integer.parseInt(edt_number.getEditText().getText().toString().trim()));
+                            CartFragment.sum_price = (int)(itemCart.getAmount()*(itemCart.getProduct_price()*(100-Integer.parseInt(itemCart.getPromotion_infor()))/100));
+                            CartFragment.txt_sum_price.setText(formatter.format(CartFragment.sum_price)+" "+vnd);
+                            holder.txt_amount_product.setText(edt_number.getEditText().getText().toString().trim());
+                            int sum = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getAmount();
+                            CartFragment.txt_title_cart.setText("Giỏ hàng ("+sum+")");
+                            dialog.dismiss();
+                        }
+                    }
+                });
+            }
+
+            private boolean validateNumber(TextInputLayout edt_number) {
+                if (edt_number.getEditText().getText().length()==0){
+                    edt_number.setError("Vui lòng nhập số lượng!");
+                    return false;
+                }else if (Integer.parseInt(edt_number.getEditText().getText().toString().trim())>itemCart.getProduct_amount()){
+                    edt_number.getEditText().setText(itemCart.getProduct_amount()+"");
+                }
+                edt_number.setError(null);
+                return true;
             }
         });
     }

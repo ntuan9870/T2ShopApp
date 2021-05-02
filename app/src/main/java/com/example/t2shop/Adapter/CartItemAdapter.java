@@ -18,6 +18,7 @@ import android.view.animation.Transformation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -65,7 +66,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
         dsc = dsc.replace("</p>", "");
         holder.txt_name_product_cart.setText(itemCart.getProduct_name() + " là " + dsc);
         DecimalFormat formatter = new DecimalFormat("###,###,###");
-        double pr = itemCart.getAmount()*(itemCart.getProduct_price()-(itemCart.getProduct_price()*Integer.parseInt(itemCart.getPromotion_infor()))/100);
+        double pr = itemCart.getAmount()*(itemCart.getProduct_price()-(itemCart.getProduct_price()*itemCart.getPromotion_infor())/100);
         String price = formatter.format(pr);
         Currency currency = Currency.getInstance("VND");
         String vnd = currency.getSymbol();
@@ -86,10 +87,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
                     if (itemCart.getAmount()==1){
                         holder.btn_decrease_number.setEnabled(false);
                     }
-                    double pr = itemCart.getAmount()*(itemCart.getProduct_price()-(itemCart.getProduct_price()*Integer.parseInt(itemCart.getPromotion_infor()))/100);
+                    double pr = itemCart.getAmount()*(itemCart.getProduct_price()-(itemCart.getProduct_price()*itemCart.getPromotion_infor())/100);
                     String price = formatter.format(pr);
                     holder.txt_price_product_cart.setText(price+" " + vnd);
-                    CartFragment.sum_price-=itemCart.getProduct_price()*(100-Integer.parseInt(itemCart.getPromotion_infor()))/100;
+                    CartFragment.sum_price-=itemCart.getProduct_price()*(100-itemCart.getPromotion_infor())/100;
                     CartFragment.txt_sum_price.setText(formatter.format(CartFragment.sum_price)+" "+vnd);
                     int sum = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getAmount();
                     CartFragment.txt_title_cart.setText("Giỏ hàng ("+sum+")");
@@ -99,6 +100,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
         holder.btn_increase_number.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Toast.makeText(context, ""+itemCart.getProduct_amount(), Toast.LENGTH_SHORT).show();
                 if (itemCart.getAmount()<itemCart.getProduct_amount()){
                     itemCart.setAmount(itemCart.getAmount()+1);
                     holder.txt_amount_product.setText(itemCart.getAmount()+"");
@@ -106,10 +108,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
                     if (itemCart.getAmount()>1){
                         holder.btn_decrease_number.setEnabled(true);
                     }
-                    double pr = itemCart.getAmount()*(itemCart.getProduct_price()-(itemCart.getProduct_price()*Integer.parseInt(itemCart.getPromotion_infor()))/100);
+                    double pr = itemCart.getAmount()*(itemCart.getProduct_price()-(itemCart.getProduct_price()*itemCart.getPromotion_infor())/100);
                     String price = formatter.format(pr);
                     holder.txt_price_product_cart.setText(price+" " + vnd);
-                    CartFragment.sum_price+=itemCart.getProduct_price()*(100-Integer.parseInt(itemCart.getPromotion_infor()))/100;
+                    CartFragment.sum_price+=itemCart.getProduct_price()*(100-itemCart.getPromotion_infor())/100;
                     CartFragment.txt_sum_price.setText(formatter.format(CartFragment.sum_price)+" "+vnd);
                     int sum = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getAmount();
                     CartFragment.txt_title_cart.setText("Giỏ hàng ("+sum+")");
@@ -119,7 +121,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
         holder.img_cancel_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CartFragment.sum_price-=itemCart.getAmount()*(itemCart.getProduct_price()*(100-Integer.parseInt(itemCart.getPromotion_infor()))/100);
+                CartFragment.sum_price-=itemCart.getAmount()*(itemCart.getProduct_price()*(100-itemCart.getPromotion_infor())/100);
                 CartFragment.txt_sum_price.setText(formatter.format(CartFragment.sum_price)+" "+vnd);
                 ItemCartDatabase.getInstance(context).itemCartDAO().delete(itemCart);
                 notifyItemRemoved(position);
@@ -168,7 +170,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.ViewHo
                     public void onClick(View v) {
                         if (validateNumber(edt_number)){
                             itemCart.setAmount(Integer.parseInt(edt_number.getEditText().getText().toString().trim()));
-                            CartFragment.sum_price = (int)(itemCart.getAmount()*(itemCart.getProduct_price()*(100-Integer.parseInt(itemCart.getPromotion_infor()))/100));
+                            CartFragment.sum_price = (int)(itemCart.getAmount()*(itemCart.getProduct_price()*(100-itemCart.getPromotion_infor())/100));
                             CartFragment.txt_sum_price.setText(formatter.format(CartFragment.sum_price)+" "+vnd);
                             holder.txt_amount_product.setText(edt_number.getEditText().getText().toString().trim());
                             int sum = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getAmount();

@@ -12,7 +12,7 @@ import com.example.t2shop.DAO.PromotionDAO;
 import com.example.t2shop.Model.Product;
 import com.example.t2shop.Model.Promotion;
 
-@Database(entities = {Promotion.class}, version = 1)
+@Database(entities = {Promotion.class}, version = 2)
 public abstract class PromotionDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "promotions.db";
     private static PromotionDatabase instance;

@@ -11,15 +11,16 @@ import com.example.t2shop.DAO.ProductDAO;
 import com.example.t2shop.DAO.PromotionDAO;
 import com.example.t2shop.Model.ItemCart;
 
-@Database(entities = {ItemCart.class}, version = 1)
+@Database(entities = {ItemCart.class}, version = 2)
 public abstract class ItemCartDatabase extends RoomDatabase {
     private static final String DATABASE_NAME = "itemcarts.db";
     private static ItemCartDatabase instance;
     public static synchronized ItemCartDatabase getInstance(Context context){
         if (instance == null){
             instance = Room.databaseBuilder(context.getApplicationContext(), ItemCartDatabase.class, DATABASE_NAME)
-            .allowMainThreadQueries()
-            .build();
+                    .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
+                    .build();
         }
         return instance;
     }

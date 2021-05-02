@@ -94,4 +94,10 @@ public interface IT2ShopAPI {
     @POST("auth/getcode")
     @FormUrlEncoded
     Observable<ResponseMessage> getCode(@Field("email")String email);
+    @POST("getFavoriteProduct")
+    @FormUrlEncoded
+    Observable<ResponseProduct> getFavoriteProduct(@Field("user_id") int user_id);
+    @POST("recommened/getrecommened")
+    @FormUrlEncoded
+    Observable<ResponseProduct> getRecommendProduct(@Field("user_id") int user_id);
 }

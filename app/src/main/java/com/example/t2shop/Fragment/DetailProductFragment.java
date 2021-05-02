@@ -81,6 +81,7 @@ public class DetailProductFragment extends Fragment {
     private RecyclerView rv_comment_detail_product, rating_user;
     private Product product;
     private User user;
+    private int promo;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -178,12 +179,20 @@ public class DetailProductFragment extends Fragment {
         dsc = dsc.replace("</p>", "");
         txt_name_detail_product.setText(product.getProduct_name() + " là " + dsc);
         DecimalFormat formatter = new DecimalFormat("###,###,###");
-        String price = formatter.format(product.getProduct_price()-(product.getProduct_price()*Integer.parseInt(promotion.getPromotion_infor()))/100);
+        promo = 0;
+        if (promotion!=null){
+            promo = promotion.getPromotion_infor();
+        }
+        String price = formatter.format(product.getProduct_price()-(product.getProduct_price()*promo)/100);
         Currency currency = Currency.getInstance("VND");
         String vnd = currency.getSymbol();
         txt_price_detail_product.setText(price+" "+vnd);
         txt_price_original_detail_product.setText(Html.fromHtml("<strike>"+formatter.format(product.getProduct_price())+vnd+"</strike>"));
-        txt_promotion_detail_product.setText("- " + promotion.getPromotion_infor()+"%");
+        if(promo!=0){
+            txt_promotion_detail_product.setText("- " + promotion.getPromotion_infor()+"%");
+        }else{
+            txt_promotion_detail_product.setText("Không có khuyến mãi!");
+        }
         rating_detail_product.setRating(Float.parseFloat(rating));
         rating_detail_product2.setRating(Float.parseFloat(rating));
         getRatingAll();
@@ -222,7 +231,7 @@ public class DetailProductFragment extends Fragment {
                     item.setProduct_price(product.getProduct_price());
                     item.setProduct_description(product.getProduct_description());
                     item.setProduct_img(product.getProduct_img());
-                    item.setPromotion_infor(promotion.getPromotion_infor());
+                    item.setPromotion_infor(promo);
                     item.setProduct_amount(product.getProduct_amount());
                     item.setAmount(1);
                     ItemCartDatabase.getInstance(getContext()).itemCartDAO().insert(item);

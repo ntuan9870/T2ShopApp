@@ -51,14 +51,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
         Glide.with(context).load(p.getProduct_img()).into(holder.img_home_product);
         holder.txt_name_home_product.setText(p.getProduct_name() + " là " + p.getProduct_description());
         DecimalFormat formatter = new DecimalFormat("###,###,###");
-        String price = formatter.format(p.getProduct_price()-(p.getProduct_price()*Integer.parseInt(promotion.getPromotion_infor()))/100);
+        int promo = 0;
+        if(promotion != null){
+            promo= promotion.getPromotion_infor();
+        }
+        String price = formatter.format(p.getProduct_price()-(p.getProduct_price()*promo)/100);
         Currency currency = Currency.getInstance("VND");
         String vnd = currency.getSymbol();
         holder.txt_price_home_product.setText(price+" " + vnd);
         String dsc = p.getProduct_description().replace("<p>", "");
         dsc = dsc.replace("</p>", "");
         holder.txt_name_home_product.setText(p.getProduct_name() + " là " + dsc);
-        holder.txt_promotion_home_product.setText("- " + promotion.getPromotion_infor() +"%");
+        holder.txt_promotion_home_product.setText("- " + promo +"%");
         holder.rating_home_product.setRating(Float.parseFloat(arrRatings.get(position)));
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

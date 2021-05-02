@@ -121,7 +121,7 @@ public class CheckoutFragment extends Fragment {
         List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
         sum_price = 0;
         for (int i = 0; i < itemCarts.size(); i++){
-            sum_price += itemCarts.get(i).getProduct_price()*itemCarts.get(i).getAmount()*(100-Integer.parseInt(itemCarts.get(i).getPromotion_infor()))/100;
+            sum_price += itemCarts.get(i).getProduct_price()*itemCarts.get(i).getAmount()*(100-itemCarts.get(i).getPromotion_infor())/100;
         }
         DecimalFormat formatter = new DecimalFormat("###,###,###");
         String price = formatter.format(sum_price);

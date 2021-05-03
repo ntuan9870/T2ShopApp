@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -47,7 +48,9 @@ import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseCategory;
 import com.example.t2shop.Response.ResponseComment;
+import com.example.t2shop.Response.ResponseFavorite;
 import com.example.t2shop.Response.ResponseMessage;
+import com.example.t2shop.Response.ResponseOrder;
 import com.example.t2shop.Response.ResponseRatingAll;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
@@ -67,7 +70,7 @@ import io.reactivex.schedulers.Schedulers;
 public class DetailProductFragment extends Fragment {
     private AppBarLayout appBarLayoutDetailProduct;
     private ImageView img_menu_detail_product, img_shopping_cart_detail_product, img_home_detail_product, img_search_detail_product,
-            img_back_detail_product, img_detail_product;
+            img_back_detail_product, img_detail_product, detail_favorite_product;
     private TextView txt_name_detail_product, txt_price_detail_product, txt_price_original_detail_product, txt_promotion_detail_product,
             txt_number_rating_detail_product, txt_category_detail_product, txt_warranty_detail_product, txt_accessories_detail_product;
     private TextView txt_conditional_detail_product, txt_description_detail_product, txt_rating_detail_product, txt_number_rating_detail_product2, txt_rating_user,
@@ -81,11 +84,15 @@ public class DetailProductFragment extends Fragment {
     private RecyclerView rv_comment_detail_product, rating_user;
     private Product product;
     private User user;
-    private int promo;
+    private int promo, check_fv, un_check_fv, fd_id;
+    private boolean b_check_fv = false, bought = false;
+    private String cate_name;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail_product, container, false);
+        check_fv = R.drawable.ic_baseline_favorite_24;
+        un_check_fv = R.drawable.ic_baseline_favorite_border_24;
         RelativeLayout rl_root = view.findViewById(R.id.ln_root);
         rl_root.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,6 +137,7 @@ public class DetailProductFragment extends Fragment {
         ln_comment  = view.findViewById(R.id.ln_comment);
         rv_comment_detail_product  = view.findViewById(R.id.rv_comment_detail_product);
         btn_send_star  = view.findViewById(R.id.btn_send_star);
+        detail_favorite_product = view.findViewById(R.id.detail_favorite_product);
         appBarLayoutDetailProduct.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             boolean isShow = true;
             int scrollRange = -1;
@@ -191,7 +199,7 @@ public class DetailProductFragment extends Fragment {
         if(promo!=0){
             txt_promotion_detail_product.setText("- " + promotion.getPromotion_infor()+"%");
         }else{
-            txt_promotion_detail_product.setText("Không có khuyến mãi!");
+            txt_promotion_detail_product.setText("");
         }
         rating_detail_product.setRating(Float.parseFloat(rating));
         rating_detail_product2.setRating(Float.parseFloat(rating));
@@ -208,6 +216,7 @@ public class DetailProductFragment extends Fragment {
             public void accept(Category responseCategory) throws Exception {
                 if (responseCategory!=null){
                     txt_category_detail_product.setText(responseCategory.getCategory_name()+"");
+                    cate_name = responseCategory.getCategory_name();
                 }
             }
         }));
@@ -260,9 +269,7 @@ public class DetailProductFragment extends Fragment {
             ln_rating_user.setVisibility(View.GONE);
         }else{
             txt_login.setVisibility(View.INVISIBLE);
-            rating_user.setVisibility(View.VISIBLE);
-            ln_comment.setVisibility(View.VISIBLE);
-            ln_rating_user.setVisibility(View.VISIBLE);
+            checkBought();
         }
         btn_send_comment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -303,7 +310,171 @@ public class DetailProductFragment extends Fragment {
         getRating();
         rating();
         keyboard(view);
+        if(user!=null){
+            handlefavorite();
+            handleRecommend();
+        }
+        img_home_detail_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TabLayout.Tab tab = MainActivity.tabLayout.getTabAt(0);
+                tab.select();
+                getFragmentManager().popBackStack();
+            }
+        });
+        img_search_detail_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TabLayout.Tab tab = MainActivity.tabLayout.getTabAt(2);
+                tab.select();
+                getFragmentManager().popBackStack();
+            }
+        });
         return view;
+    }
+
+    private void checkBought() {
+        Common.compositeDisposable.add(Common.it2ShopAPI.checkAllowRating(user.getUser_id(), product.getProduct_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseOrder>() {
+                    @Override
+                    public void accept(ResponseOrder responseOrder) throws Exception {
+                        if (responseOrder.getOrder().size()>0){
+                            rating_user.setVisibility(View.VISIBLE);
+                            ln_comment.setVisibility(View.VISIBLE);
+                            ln_rating_user.setVisibility(View.VISIBLE);
+                        }else{
+                            rating_user.setVisibility(View.INVISIBLE);
+                            ln_comment.setVisibility(View.INVISIBLE);
+                            ln_rating_user.setVisibility(View.GONE);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Common2.showDialogAutoClose(getContext(), "Vui lòng kết nối INTERNET!");
+                    }
+                }));
+    }
+
+    private void handleRecommend() {
+        Handler handler = new Handler();
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                addRecommend();
+            }
+        };
+        handler.postDelayed(r, 10000);
+    }
+
+    private void addRecommend() {
+        Common.compositeDisposable.add(Common.it2ShopAPI.addRecommend(user.getUser_id(), cate_name)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseMessage>() {
+                    @Override
+                    public void accept(ResponseMessage message) throws Exception {
+                        if (message.getMessage().equals("success")){
+                        }else{
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Common2.showDialogAutoClose(getContext(), "Vui lòng kết nối INTERNET!");
+                    }
+                }));
+    }
+
+    private void handlefavorite() {
+        getFavorite();
+        detail_favorite_product.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(b_check_fv){
+                    removeFavorite();
+                }else{
+                    addFavorite();
+                }
+            }
+        });
+    }
+
+    private void removeFavorite() {
+        SweetAlertDialog dialog = Common2.loadingDialog(getContext(), "Xin chờ..");
+        dialog.show();
+        Common.compositeDisposable.add(Common.it2ShopAPI.removeFavorite(fd_id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseMessage>() {
+                    @Override
+                    public void accept(ResponseMessage message) throws Exception {
+                        dialog.dismiss();
+                        if (message.getMessage()!=null){
+                            getFavorite();
+                            Common2.showDialogAutoClose(getContext(), "Đã bỏ yêu thích!");
+                        }else{
+                            Common2.showDialogAutoClose(getContext(), "Đã xảy ra lỗi!");
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Common2.showDialogAutoClose(getContext(), "Vui lòng kết nối INTERNET!");
+                    }
+                }));
+    }
+
+    private void addFavorite() {
+        SweetAlertDialog dialog = Common2.loadingDialog(getContext(), "Xin chờ..");
+        dialog.show();
+        Common.compositeDisposable.add(Common.it2ShopAPI.addFavorite(user.getUser_id(), product.getProduct_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseMessage>() {
+                    @Override
+                    public void accept(ResponseMessage message) throws Exception {
+                        dialog.dismiss();
+                        if (message.getMessage().equals("success")){
+                            getFavorite();
+                            Common2.showDialogAutoClose(getContext(), "Đã thêm vào yêu thích!");
+                        }else{
+                            Common2.showDialogAutoClose(getContext(), "Đã xảy ra lỗi!");
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Common2.showDialogAutoClose(getContext(), "Vui lòng kết nối INTERNET!");
+                    }
+                }));
+    }
+
+    private void getFavorite() {
+        Common.compositeDisposable.add(Common.it2ShopAPI.getFavorite(user.getUser_id(), product.getProduct_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseFavorite>() {
+                    @Override
+                    public void accept(ResponseFavorite responseFavorite) throws Exception {
+                        if (responseFavorite.getFavorites()!=null&&responseFavorite.getFavorites().size()>0){
+                            detail_favorite_product.setImageResource(check_fv);
+                            b_check_fv = true;
+                            fd_id = responseFavorite.getFavorites().get(0).getFP_id();
+                        }else{
+                            fd_id = -1;
+                            detail_favorite_product.setImageResource(un_check_fv);
+                            b_check_fv = false;
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        Common2.showDialogAutoClose(getContext(), "Vui lòng kết nối INTERNET!");
+                    }
+                }));
     }
 
     private void keyboard(View view) {
@@ -318,7 +489,7 @@ public class DetailProductFragment extends Fragment {
                     @Override
                     public void accept(ResponseRatingAll responseRatingAll) throws Exception {
                         if (responseRatingAll.getArrcount().get(0)==0) {
-                            txt_number_rating_detail_product.setText("(Chưa có đánh giá nào cả)");
+                            txt_number_rating_detail_product.setText("( 0 đánh giá)");
                             txt_number_rating_detail_product2.setText("(Chưa có đánh giá nào cả)");
                         } else {
                             txt_number_rating_detail_product.setText("("+responseRatingAll.getArrcount().get(0)+" đánh giá)");

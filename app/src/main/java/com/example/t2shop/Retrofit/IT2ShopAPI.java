@@ -3,6 +3,7 @@ package com.example.t2shop.Retrofit;
 import com.example.t2shop.Model.Category;
 import com.example.t2shop.Model.Comment;
 import com.example.t2shop.Response.ResponseComment;
+import com.example.t2shop.Response.ResponseFavorite;
 import com.example.t2shop.Response.ResponseOrder;
 import com.example.t2shop.Response.ResponseOrderItem;
 import com.example.t2shop.Response.ResponseProduct;
@@ -15,7 +16,7 @@ import com.example.t2shop.Response.ResponseMessage;
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import retrofit2.Response;
+import okhttp3.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -100,4 +101,19 @@ public interface IT2ShopAPI {
     @POST("recommened/getrecommened")
     @FormUrlEncoded
     Observable<ResponseProduct> getRecommendProduct(@Field("user_id") int user_id);
+    @POST("pushFavoriteProduct")
+    @FormUrlEncoded
+    Observable<ResponseMessage> addFavorite(@Field("user_id") int user_id, @Field("product_id") int product_id);
+    @POST("getFavorite")
+    @FormUrlEncoded
+    Observable<ResponseFavorite> getFavorite(@Field("user_id") int user_id, @Field("product_id") int product_id);
+    @POST("removeFavoriteProduct")
+    @FormUrlEncoded
+    Observable<ResponseMessage> removeFavorite(@Field("FP_id") int FP_id);
+    @POST("recommened/add")
+    @FormUrlEncoded
+    Observable<ResponseMessage> addRecommend(@Field("user_id") int user_id, @Field("product_id") String product_id);
+    @POST("checkAcceptComment")
+    @FormUrlEncoded
+    Observable<ResponseOrder> checkAllowRating(@Field("user_id") int user_id, @Field("product_id") int product_id);
 }

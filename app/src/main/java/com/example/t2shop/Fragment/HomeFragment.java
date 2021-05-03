@@ -190,6 +190,15 @@ public class HomeFragment extends Fragment {
                 if(Common.isConnectedToInternet(getContext())){
                     fetchNewProduct();
                     fetchFeatured();
+                    if (user!=null){
+                        rl_favorite_product.setVisibility(View.VISIBLE);
+                        rl_recommend_product.setVisibility(View.VISIBLE);
+                        fetchFavorite();
+                        fetchRecommend();
+                    }else{
+                        rl_favorite_product.setVisibility(View.INVISIBLE);
+                        rl_recommend_product.setVisibility(View.INVISIBLE);
+                    }
                     refresh_home.setRefreshing(false);
                 }else{
                     Toast.makeText(getContext(), "Vui lòng kết nối INTERNET và thử lại", Toast.LENGTH_SHORT).show();

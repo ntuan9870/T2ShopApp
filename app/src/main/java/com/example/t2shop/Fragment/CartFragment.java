@@ -25,17 +25,22 @@ import android.widget.Toast;
 
 import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Adapter.CartItemAdapter;
+import com.example.t2shop.CallBack.RetrofitClient;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
+import com.example.t2shop.Common.RetrofitAPIAddress;
 import com.example.t2shop.DAO.ItemCartDAO;
 import com.example.t2shop.Database.ItemCartDatabase;
 import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Model.District;
 import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.Model.Voucher;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseAllVoucher;
 import com.example.t2shop.Response.ResponseRatingAll;
+import com.example.t2shop.Retrofit.AddressAPI;
+import com.example.t2shop.Retrofit.IT2ShopAPI;
 
 import org.w3c.dom.Text;
 
@@ -44,7 +49,9 @@ import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
+import cn.pedant.SweetAlert.SweetAlertDialog;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -56,13 +63,17 @@ public class CartFragment extends Fragment {
     public static TextView txt_title_cart, txt_sum_price, txt_nothing;
     public static int sum_price = 0;
     private Button btn_buy;
+    private CompositeDisposable compositeDisposable;
+    private Spinner spinner_select_store;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
+        compositeDisposable = new CompositeDisposable();
         RelativeLayout rl_root = view.findViewById(R.id.ln_root);
         txt_nothing = view.findViewById(R.id.txt_nothing);
+        spinner_select_store = view.findViewById(R.id.spinner_select_store);
         rl_root.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,18 +130,46 @@ public class CartFragment extends Fragment {
                         transaction.addToBackStack(LoginFragment.TAG);
                         transaction.commit();
                     }else{
+                        SweetAlertDialog dialog = Common2.loadingDialog(getContext(), "Xin chờ..");
+                        dialog.show();
                         FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
                         CheckoutFragment checkoutFragment = new CheckoutFragment();
                         transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
                         transaction.replace(R.id.main_frame, checkoutFragment);
                         transaction.addToBackStack(CheckoutFragment.TAG);
                         transaction.commit();
+                        dialog.dismiss();
                     }
                 }else{
                     Common2.confirmDialog(getContext(), "Hãy thêm sản phẩm!", "Tất nhiên bạn không thể đặt hàng nếu không có sản phẩm! :)", "OK");
                 }
             }
         });
+        selectStore();
         return view;
+    }
+
+    private void selectStore() {
+//        compositeDisposable.add(Common.it2ShopAPI.getAllStore()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<List<District>>() {
+//                    @Override
+//                    public void accept(List<District> responseDistrict) throws Exception {
+//                        ArrayList<String> arrOptions = new ArrayList<>();
+//                        for (int i = 0; i < responseDistrict.size(); i++) {
+//                            arrOptions.add(responseDistrict.get(i).getTitle());
+////                            arrDistrict.add(responseDistrict.get(i).getID());
+//                        }
+//                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
+//                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+////                        lv_sl_address.setAdapter(adapter);
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        Toast.makeText(getContext(), ""+throwable.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }));
     }
 }

@@ -12,6 +12,7 @@ import com.example.t2shop.Response.ResponseCategory;
 import com.example.t2shop.Response.ResponseLogin;
 import com.example.t2shop.Response.ResponseRatingAll;
 import com.example.t2shop.Response.ResponseMessage;
+import com.example.t2shop.Response.ResponseStore;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
@@ -116,4 +117,6 @@ public interface IT2ShopAPI {
     @POST("checkAcceptComment")
     @FormUrlEncoded
     Observable<ResponseOrder> checkAllowRating(@Field("user_id") int user_id, @Field("product_id") int product_id);
+    @GET("category/show")
+    Observable<ResponseStore>  getAllStore();
 }

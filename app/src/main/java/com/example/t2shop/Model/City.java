@@ -1,87 +1,45 @@
 package com.example.t2shop.Model;
 
+import java.util.ArrayList;
+
 public class City {
-    private int Type;
-    private String SolrID;
-    private int ID;
-    private String Title;
-    private int STT;
-    private String Created;
-    private String Updated;
-    private int TotalDoanhNghiep;
+    private String id;
+    private String code;
+    private String name;
+    private ArrayList<District> arrDistrict;
 
-    public City(int type, String solrID, int ID, String title, int STT, String created, String updated, int totalDoanhNghiep) {
-        Type = type;
-        SolrID = solrID;
-        this.ID = ID;
-        Title = title;
-        this.STT = STT;
-        Created = created;
-        Updated = updated;
-        TotalDoanhNghiep = totalDoanhNghiep;
+    public City() {
     }
 
-    public int getType() {
-        return Type;
+    public String getId() {
+        return id;
     }
 
-    public void setType(int type) {
-        Type = type;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getSolrID() {
-        return SolrID;
+    public String getCode() {
+        return code;
     }
 
-    public void setSolrID(String solrID) {
-        SolrID = solrID;
+    public void setCode(String code) {
+        this.code = code;
     }
 
-    public int getID() {
-        return ID;
+    public String getName() {
+        return name;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getTitle() {
-        return Title;
+    public ArrayList<District> getArrDistrict() {
+        return arrDistrict;
     }
 
-    public void setTitle(String title) {
-        Title = title;
-    }
-
-    public int getSTT() {
-        return STT;
-    }
-
-    public void setSTT(int STT) {
-        this.STT = STT;
-    }
-
-    public String getCreated() {
-        return Created;
-    }
-
-    public void setCreated(String created) {
-        Created = created;
-    }
-
-    public String getUpdated() {
-        return Updated;
-    }
-
-    public void setUpdated(String updated) {
-        Updated = updated;
-    }
-
-    public int getTotalDoanhNghiep() {
-        return TotalDoanhNghiep;
-    }
-
-    public void setTotalDoanhNghiep(int totalDoanhNghiep) {
-        TotalDoanhNghiep = totalDoanhNghiep;
+    public void setArrDistrict(ArrayList<District> arrDistrict) {
+        this.arrDistrict = arrDistrict;
     }
 }

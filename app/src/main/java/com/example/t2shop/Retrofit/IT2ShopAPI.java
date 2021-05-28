@@ -2,6 +2,7 @@ package com.example.t2shop.Retrofit;
 
 import com.example.t2shop.Model.Category;
 import com.example.t2shop.Model.Comment;
+import com.example.t2shop.Response.ResponseChangeStore;
 import com.example.t2shop.Response.ResponseComment;
 import com.example.t2shop.Response.ResponseFavorite;
 import com.example.t2shop.Response.ResponseOrder;
@@ -62,7 +63,8 @@ public interface IT2ShopAPI {
     @FormUrlEncoded
     Observable<ResponseMessage> addOrder(@Field("cart") String cart, @Field("user_id") String user_id, @Field("user_name_receive") String user_name_receive,
                                          @Field("user_phone") String user_phone, @Field("user_message") String user_message, @Field("user_address") String user_address,
-                                         @Field("total") String total, @Field("form") String form, @Field("select_voucher") String select_voucher);
+                                         @Field("total") String total, @Field("form") String form, @Field("select_voucher") String select_voucher,
+                                         @Field("store_id") String store_id);
     @GET("category/show")
     Observable<ResponseCategory> getAllCategory();
     @POST("category/getEdit")
@@ -117,6 +119,9 @@ public interface IT2ShopAPI {
     @POST("checkAcceptComment")
     @FormUrlEncoded
     Observable<ResponseOrder> checkAllowRating(@Field("user_id") int user_id, @Field("product_id") int product_id);
-    @GET("category/show")
-    Observable<ResponseStore>  getAllStore();
+    @GET("store/showStore")
+    Observable<ResponseStore> getAllStore();
+    @POST("cart/checkChangeStore")
+    @FormUrlEncoded
+    Observable<ResponseChangeStore> checkChangeStore(@Field("cart") String json_cart, @Field("store_id") int store_id);
 }

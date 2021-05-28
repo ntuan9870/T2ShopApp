@@ -32,6 +32,7 @@ import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Activity.MoMoActivity;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
+import com.example.t2shop.Common.Constants;
 import com.example.t2shop.Common.RetrofitAPIAddress;
 import com.example.t2shop.Database.ItemCartDatabase;
 import com.example.t2shop.Database.UserDatabase;
@@ -325,10 +326,10 @@ public class CheckoutFragment extends Fragment {
                     }
                     if (!cb_momo.isChecked()) {
                         String address = text_input_user_address.getEditText().getText().toString().trim() + " - " + text_input_user_address_ward.getEditText().getText().toString().trim() + " - "
-                                + text_input_user_address_ward.getEditText().getText().toString().trim() + " - " + text_input_user_address_city.getEditText().getText().toString();
+                                + text_input_user_address_district.getEditText().getText().toString().trim() + " - " + text_input_user_address_city.getEditText().getText().toString();
                         compositeDisposable.add(Common.it2ShopAPI.addOrder(jsonArray.toString(), user.getUser_id() + "", text_input_user_name.getEditText().getText().toString(),
                                 text_input_phone_number.getEditText().getText().toString(), "", address, sum_price + "", "Trực tiếp",
-                                voucher_id)
+                                voucher_id, Constants.store_id+"")
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Consumer<ResponseMessage>() {

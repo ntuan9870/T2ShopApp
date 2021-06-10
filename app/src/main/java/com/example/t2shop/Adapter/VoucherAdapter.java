@@ -17,7 +17,11 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.t2shop.Common.Common;
+import com.example.t2shop.Common.Common2;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Fragment.CartFragment;
+import com.example.t2shop.Fragment.CheckoutFragment;
+import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.Voucher;
 import com.example.t2shop.R;
 
@@ -45,15 +49,20 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.ViewHold
         holder.btn_use.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("sl_voucher_from_notification", position+1);
-                FragmentTransaction transaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
-                CartFragment cartFragment = new CartFragment();
-                cartFragment.setArguments(bundle);
-                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
-                transaction.replace(R.id.main_frame, cartFragment);
-                transaction.addToBackStack(CartFragment.TAG);
-                transaction.commit();
+                List<ItemCart> itemCarts = T2ShopDatabase.getInstance(context).itemCartDAO().getItems();
+                if(itemCarts.size() == 0){
+                    Common2.showDialogAutoClose(context,"Giỏ hàng rỗng");
+                }else{
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("sl_voucher_from_notification", position+1);
+                    FragmentTransaction transaction = ((AppCompatActivity)context).getSupportFragmentManager().beginTransaction();
+                    CheckoutFragment checkoutFragment = new CheckoutFragment();
+                    checkoutFragment.setArguments(bundle);
+                    transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                    transaction.replace(R.id.main_frame, checkoutFragment);
+                    transaction.addToBackStack(CheckoutFragment.TAG);
+                    transaction.commit();
+                }
             }
         });
         holder.btn_view_detail.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +77,7 @@ public class VoucherAdapter extends RecyclerView.Adapter<VoucherAdapter.ViewHold
                 dialog.show();
                 txt_detail_voucher.setText("Tên Voucher: " + vouchers.get(position).getVoucher_name()+"\n"
                 +"Ngày hết hạn: "+vouchers.get(position).getVoucher_end() + "\nGiá trị: "+vouchers.get(position).getVoucher_value()
-                +"\nChiết khấu: " + vouchers.get(position).getVoucher_discount() + "\nSố lượng: " +  vouchers.get(position).getVoucher_total());
+                +"VND\nChiết khấu: " + vouchers.get(position).getVoucher_discount() + "%\nSố lượng: " +  vouchers.get(position).getAmount_voucher());
                 btn_ok.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

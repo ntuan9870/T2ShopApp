@@ -9,16 +9,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.t2shop.Adapter.ChatBotAdapter;
 import com.example.t2shop.Common.Common;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.Model.Voucher;
 import com.example.t2shop.R;
@@ -52,7 +49,7 @@ public class ChatBotFragment extends Fragment {
 
             }
         });
-        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         arrMessages.add("Xin chào bạn, bạn khỏe không?");
         if (user!=null){
             getMessages();

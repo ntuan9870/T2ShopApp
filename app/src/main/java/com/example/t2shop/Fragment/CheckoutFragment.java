@@ -14,28 +14,22 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
-import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Activity.MoMoActivity;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
 import com.example.t2shop.Common.Constants;
 import com.example.t2shop.Common.RetrofitAPIAddress;
-import com.example.t2shop.Database.ItemCartDatabase;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.City;
 import com.example.t2shop.Model.District;
 import com.example.t2shop.Model.ItemCart;
@@ -44,7 +38,6 @@ import com.example.t2shop.Model.Voucher;
 import com.example.t2shop.Model.Ward;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseAllVoucher;
-import com.example.t2shop.Response.ResponseCity;
 import com.example.t2shop.Response.ResponseMessage;
 import com.example.t2shop.Retrofit.AddressAPI;
 import com.google.android.material.textfield.TextInputEditText;
@@ -99,7 +92,7 @@ public class CheckoutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         getAllAddress();
         compositeDisposable = new CompositeDisposable();
         addressAPI = RetrofitAPIAddress.getAPI();
@@ -127,9 +120,13 @@ public class CheckoutFragment extends Fragment {
         cb_momo = view.findViewById(R.id.cb_momo);
         if (user!=null){
             text_input_user_name.getEditText().setText(user.getUser_name());
-            text_input_phone_number.getEditText().setText(user.getUser_phone()+"");
+            if(user.getUser_phone() == null){
+                text_input_phone_number.getEditText().setText("");
+            }else{
+                text_input_phone_number.getEditText().setText(user.getUser_phone()+"");
+            }
         }
-        List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+        List<ItemCart> itemCarts = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getItems();
         sum_price = 0;
         for (int i = 0; i < itemCarts.size(); i++){
             sum_price += itemCarts.get(i).getProduct_price()*itemCarts.get(i).getAmount()*(100-itemCarts.get(i).getPromotion_infor())/100;
@@ -274,6 +271,20 @@ public class CheckoutFragment extends Fragment {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 idSL = position-1;
+                                DecimalFormat formatter = new DecimalFormat("###,###,###");
+                                String price2 = "0";
+                                int tmpPrice = sum_price;
+                                price2 = formatter.format(tmpPrice);
+                                if(idSL>=0){
+                                    if(voucherList.get(idSL).getVoucher_value()!=0){
+                                        tmpPrice = sum_price - voucherList.get(idSL).getVoucher_value();
+                                        price2 = formatter.format(tmpPrice);
+                                    }else{
+                                        tmpPrice = sum_price - (sum_price*voucherList.get(idSL).getVoucher_discount())/100;
+                                        price2 = formatter.format(tmpPrice);
+                                    }
+                                }
+                                txt_sum_price_checkout.setText(price2 + " " +vnd);
                             }
 
                             @Override
@@ -300,7 +311,7 @@ public class CheckoutFragment extends Fragment {
                 if (validateName()&&validatePhone()&&validateAddress()&&validateCity()&&validateDistrict()&&validateWard()){
                     SweetAlertDialog dialogLoading = Common2.loadingDialog(getContext(), "Chờ chút..");
                     dialogLoading.show();
-                    List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+                    List<ItemCart> itemCarts = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getItems();
                     JSONArray jsonArray = new JSONArray();
                     for (int i = 0; i < itemCarts.size(); i++){
                         JSONObject myJsonObject = new JSONObject();
@@ -336,7 +347,7 @@ public class CheckoutFragment extends Fragment {
                                     @Override
                                     public void accept(ResponseMessage responseMessage) throws Exception {
                                         dialogLoading.dismiss();
-                                        ItemCartDatabase.getInstance(getContext()).itemCartDAO().deleteAll();
+                                        T2ShopDatabase.getInstance(getContext()).itemCartDAO().deleteAll();
                                         AlertDialog.Builder mSuccess = new AlertDialog.Builder(getActivity());
                                         View mView = getLayoutInflater().inflate(R.layout.dialog_complete_checkout, null);
                                         Button btn_success = mView.findViewById(R.id.btn_success);

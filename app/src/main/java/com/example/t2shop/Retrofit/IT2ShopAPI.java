@@ -124,4 +124,7 @@ public interface IT2ShopAPI {
     @POST("cart/checkChangeStore")
     @FormUrlEncoded
     Observable<ResponseChangeStore> checkChangeStore(@Field("cart") String json_cart, @Field("store_id") int store_id);
+    @POST("order/show/remove")
+    @FormUrlEncoded
+    Observable<ResponseMessage> removeOrder(@Field("order_id") int order_id);
 }

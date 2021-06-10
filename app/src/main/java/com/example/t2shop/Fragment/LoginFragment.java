@@ -3,22 +3,15 @@ package com.example.t2shop.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,11 +28,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.bumptech.glide.Glide;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
-import com.example.t2shop.Common.KeyboardWatcher;
-import com.example.t2shop.Database.ItemCartDatabase;
-import com.example.t2shop.Database.UserDatabase;
-import com.example.t2shop.Interface.IOnBackPressed;
-import com.example.t2shop.Model.ItemCart;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseLogin;
@@ -54,17 +43,12 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -193,7 +177,8 @@ public class LoginFragment extends Fragment {
                             }, new Consumer<Throwable>() {
                                 @Override
                                 public void accept(Throwable throwable) throws Exception {
-                                    Toast.makeText(getContext(), "Lỗi kết nối!", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getContext(), "Lỗi kết nối!"+throwable.getMessage().toString(), Toast.LENGTH_SHORT).show();
+                                    loginFail();
                                 }
                             }));
                 }
@@ -211,7 +196,7 @@ public class LoginFragment extends Fragment {
     }
 
     private void loginSuccess(User user) {
-        UserDatabase.getInstance(getContext()).userDAO().insert(user);
+        T2ShopDatabase.getInstance(getContext()).userDAO().insert(user);
         PersonalFragment.txt_login_register.setText(user.getUser_name());
         PersonalFragment.txt_name_1.setText(user.getUser_email());
         PersonalFragment.btn_log_out.setVisibility(View.VISIBLE);

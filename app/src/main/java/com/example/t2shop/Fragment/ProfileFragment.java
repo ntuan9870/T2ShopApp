@@ -15,12 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseMessage;
@@ -41,7 +40,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         LinearLayout rl_root = view.findViewById(R.id.ln_root);
         rl_root.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +120,7 @@ public class ProfileFragment extends Fragment {
                                             user.setUser_email(edt_email.getEditText().getText().toString().trim());
                                             user.setUser_name(edt_username.getEditText().getText().toString().trim());
                                             user.setUser_phone(edt_phone_number.getEditText().getText().toString().trim());
-                                            UserDatabase.getInstance(getContext()).userDAO().update(user);
+                                            T2ShopDatabase.getInstance(getContext()).userDAO().update(user);
                                             Common2.showDialogAutoClose(getContext(), "Sửa đổi thông tin thành công!");
                                         }else{
                                             Common2.showDialogAutoClose(getContext(), "Không thành công!");

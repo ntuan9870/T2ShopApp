@@ -18,15 +18,11 @@ import android.widget.Toast;
 
 import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Common.Common2;
-import com.example.t2shop.Database.ItemCartDatabase;
-import com.example.t2shop.Database.UserDatabase;
-import com.example.t2shop.Model.ItemCart;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
 import com.facebook.login.LoginManager;
 import com.google.android.material.tabs.TabLayout;
-
-import java.util.List;
 
 public class PersonalFragment extends Fragment {
 
@@ -101,7 +97,7 @@ public class PersonalFragment extends Fragment {
                 transaction.commit();
             }
         });
-        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         if (user==null){
             login();
         }else{
@@ -113,9 +109,9 @@ public class PersonalFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (user == null){
-                    user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+                    user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
                 }
-                UserDatabase.getInstance(getContext()).userDAO().delete(user);
+                T2ShopDatabase.getInstance(getContext()).userDAO().delete(user);
                 txt_login_register.setText("Đăng nhập/Đăng ký");
                 txt_name_1.setText("Chào mừng bạn đến với T2Shop");
                 login();
@@ -126,7 +122,7 @@ public class PersonalFragment extends Fragment {
         ln_order_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+                user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
                 if (user!=null) {
                     FragmentTransaction fragmentTransaction = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.addToBackStack(OrderManagerFragment.TAG);
@@ -142,7 +138,7 @@ public class PersonalFragment extends Fragment {
         ln_profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+                user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
                 if (user!=null) {
                     FragmentTransaction fragmentTransaction = ((AppCompatActivity) getContext()).getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.addToBackStack(ProfileFragment.TAG);
@@ -158,7 +154,7 @@ public class PersonalFragment extends Fragment {
         ln_change_password.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+                user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
                 if (user!=null) {
                     FragmentTransaction fragmentTransaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
                     fragmentTransaction.addToBackStack(ResetPasswordFragment.TAG);

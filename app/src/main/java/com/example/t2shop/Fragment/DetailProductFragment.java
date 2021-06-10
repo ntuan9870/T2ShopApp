@@ -1,12 +1,8 @@
 package com.example.t2shop.Fragment;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,18 +29,13 @@ import com.example.t2shop.Adapter.CommentAdapter;
 import com.example.t2shop.Adapter.RatingAdapter;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
-import com.example.t2shop.Common.Constants;
-import com.example.t2shop.Common.KeyboardUtils;
-import com.example.t2shop.CustomView.RatingView;
-import com.example.t2shop.Database.ItemCartDatabase;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.Category;
 import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.Product;
 import com.example.t2shop.Model.Promotion;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
-import com.example.t2shop.Response.ResponseCategory;
 import com.example.t2shop.Response.ResponseComment;
 import com.example.t2shop.Response.ResponseFavorite;
 import com.example.t2shop.Response.ResponseMessage;
@@ -54,11 +43,9 @@ import com.example.t2shop.Response.ResponseOrder;
 import com.example.t2shop.Response.ResponseRatingAll;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Currency;
 import java.util.List;
 
@@ -225,7 +212,7 @@ public class DetailProductFragment extends Fragment {
             public void onClick(View v) {
                 int count = 0;
                 ItemCart itemCart = new ItemCart();
-                List<ItemCart> items = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+                List<ItemCart> items = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getItems();
                 for(int i = 0; i < items.size(); i++){
                     if (items.get(i).getProduct_id()==product.getProduct_id()){
                         count++;
@@ -243,9 +230,9 @@ public class DetailProductFragment extends Fragment {
                     item.setPromotion_infor(promo);
                     item.setProduct_amount(product.getProduct_amount());
                     item.setAmount(1);
-                    ItemCartDatabase.getInstance(getContext()).itemCartDAO().insert(item);
+                    T2ShopDatabase.getInstance(getContext()).itemCartDAO().insert(item);
                 }else{
-                    ItemCartDatabase.getInstance(getContext()).itemCartDAO().update(itemCart);
+                    T2ShopDatabase.getInstance(getContext()).itemCartDAO().update(itemCart);
                 }
                 Common2.showDialogAutoClose(getContext(), "Thêm sản phẩm vào giỏ hàng thành công!");
             }
@@ -261,7 +248,7 @@ public class DetailProductFragment extends Fragment {
                 transaction.commit();
             }
         });
-        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         if (user==null){
             txt_login.setVisibility(View.VISIBLE);
             rating_user.setVisibility(View.INVISIBLE);
@@ -287,6 +274,7 @@ public class DetailProductFragment extends Fragment {
                             if (message.getMessage()!=null){
                                 Common2.showDialogAutoClose(getContext(), "Đã bình luận!");
                                 getComment();
+                                edt_comment.getEditText().setText("");
                             }
                         }
                     }, new Consumer<Throwable>() {

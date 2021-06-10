@@ -16,7 +16,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,7 +34,7 @@ import com.example.t2shop.Adapter.BannerAdapter;
 import com.example.t2shop.Adapter.ProductAdapter;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Constants;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.Banner;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.Response.ResponseProduct;
@@ -174,7 +173,7 @@ public class HomeFragment extends Fragment {
         fetchBanner();
         fetchNewProduct();
         fetchFeatured();
-        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         if (user!=null){
             rl_favorite_product.setVisibility(View.VISIBLE);
             rl_recommend_product.setVisibility(View.VISIBLE);

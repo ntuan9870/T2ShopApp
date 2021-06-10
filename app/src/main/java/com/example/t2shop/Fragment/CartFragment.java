@@ -1,7 +1,5 @@
 package com.example.t2shop.Fragment;
 
-import android.animation.LayoutTransition;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -10,9 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,41 +18,25 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Adapter.CartItemAdapter;
-import com.example.t2shop.Adapter.ProductAdapter;
-import com.example.t2shop.CallBack.RetrofitClient;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
 import com.example.t2shop.Common.Constants;
-import com.example.t2shop.Common.RetrofitAPIAddress;
-import com.example.t2shop.DAO.ItemCartDAO;
-import com.example.t2shop.Database.ItemCartDatabase;
-import com.example.t2shop.Database.UserDatabase;
-import com.example.t2shop.Model.District;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.Store;
 import com.example.t2shop.Model.User;
-import com.example.t2shop.Model.Voucher;
 import com.example.t2shop.R;
-import com.example.t2shop.Response.ResponseAllVoucher;
 import com.example.t2shop.Response.ResponseChangeStore;
-import com.example.t2shop.Response.ResponseProduct;
-import com.example.t2shop.Response.ResponseRatingAll;
 import com.example.t2shop.Response.ResponseStore;
-import com.example.t2shop.Retrofit.AddressAPI;
-import com.example.t2shop.Retrofit.IT2ShopAPI;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -107,8 +87,8 @@ public class CartFragment extends Fragment {
         btn_buy = view.findViewById(R.id.btn_buy);
 
         txt_sum_price = view.findViewById(R.id.txt_sum_price);
-        int sum = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getAmount();
-        List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+        int sum = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getAmount();
+        List<ItemCart> itemCarts = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getItems();
         sum_price = 0;
         for (int i = 0; i < itemCarts.size(); i++){
             sum_price += itemCarts.get(i).getProduct_price()*itemCarts.get(i).getAmount()*(100-itemCarts.get(i).getPromotion_infor())/100;
@@ -125,13 +105,13 @@ public class CartFragment extends Fragment {
                 getFragmentManager().popBackStack();
             }
         });
-        User user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        User user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         btn_buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (cartItemAdapter.getArrItems().size()!=0){
                     int kl = 0;
-                    List<ItemCart> itemCart = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+                    List<ItemCart> itemCart = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getItems();
                     for (int i = 0; i < itemCart.size(); i++){
                         if(resMax.get(i)<itemCart.get(i).getAmount()){
                             kl++;
@@ -179,7 +159,7 @@ public class CartFragment extends Fragment {
     }
 
     private void checkChangeStore() {
-        List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+        List<ItemCart> itemCarts = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getItems();
         JSONArray jsonArray = new JSONArray();
         for (int i = 0; i < itemCarts.size(); i++){
             JSONObject myJsonObject = new JSONObject();
@@ -204,7 +184,7 @@ public class CartFragment extends Fragment {
                     @Override
                     public void accept(ResponseChangeStore responseChangeStore) throws Exception {
                         if(responseChangeStore!=null){
-                            List<ItemCart> items = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+                            List<ItemCart> items = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getItems();
                             if (items.size()==0){
                                 txt_nothing.setVisibility(View.VISIBLE);
                             }else{

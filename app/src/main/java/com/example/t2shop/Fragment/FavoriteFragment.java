@@ -1,6 +1,5 @@
 package com.example.t2shop.Fragment;
 
-import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,11 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.example.t2shop.Adapter.ProductAdapter;
 import com.example.t2shop.Common.Common;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseProduct;
@@ -47,7 +45,7 @@ public class FavoriteFragment extends Fragment {
 
             }
         });
-        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         if (user!=null){
             fetchFavoriteProduct();
         }

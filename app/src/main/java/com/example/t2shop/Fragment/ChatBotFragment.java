@@ -1,11 +1,17 @@
 package com.example.t2shop.Fragment;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +42,7 @@ public class ChatBotFragment extends Fragment {
     private ArrayList<String> arrMessages = new ArrayList<>();
     private ImageView btn_exit_chat_bot;
     private RelativeLayout rl_chat_bot;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -49,8 +56,8 @@ public class ChatBotFragment extends Fragment {
 
             }
         });
+
         user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
-        arrMessages.add("Xin chào bạn, bạn khỏe không?");
         if (user!=null){
             getMessages();
         }
@@ -64,6 +71,8 @@ public class ChatBotFragment extends Fragment {
     }
 
     private void getMessages() {
+        arrMessages = new ArrayList<>();
+        arrMessages.add("Xin chào bạn, bạn khỏe không?");
         Common.compositeDisposable.add(Common.it2ShopAPI.getAllVoucher(user.getUser_id())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -79,6 +88,7 @@ public class ChatBotFragment extends Fragment {
                         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
                         rv_chat_bot.setLayoutManager(linearLayoutManager);
                         rv_chat_bot.setAdapter(adapter);
+
                     }
                 }, new Consumer<Throwable>() {
                     @Override

@@ -13,6 +13,7 @@ public class User {
     private String user_password;
     private String user_email;
     private String user_phone;
+    private String birthday;
     private int user_level;
     private int voucher_accumulation;
     private int voucher_user_score;
@@ -114,5 +115,13 @@ public class User {
 
     public void setUpdated_at(String updated_at) {
         this.updated_at = updated_at;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
     }
 }

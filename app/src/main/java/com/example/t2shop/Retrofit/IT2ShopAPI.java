@@ -82,9 +82,10 @@ public interface IT2ShopAPI {
     @POST("order/show/detail")
     @FormUrlEncoded
     Observable<ResponseOrderItem>  getDetailOrder(@Field("order_id") int order_id);
-    @POST("users/postEdit")
+    @POST("users/edit")
     @FormUrlEncoded
-    Observable<ResponseMessage> changeInformation(@Field("user_id") int user_id, @Field("user_name")String user_name, @Field("user_email") String user_email, @Field("user_phone") String user_phone);
+    Observable<ResponseMessage> changeInformation(@Field("user_id") int user_id, @Field("user_name")String user_name, @Field("user_email") String user_email, @Field("user_phone") String user_phone
+            , @Field("birthday") String birthday);
 
     @POST("auth/checksameemail")
     @FormUrlEncoded
@@ -127,4 +128,10 @@ public interface IT2ShopAPI {
     @POST("order/show/remove")
     @FormUrlEncoded
     Observable<ResponseMessage> removeOrder(@Field("order_id") int order_id);
+    @POST("getAllProduceReducePrice")
+    @FormUrlEncoded
+    Observable<ResponseProduct> getAllProduceReducePrice(@Field("user_id")int user_id);
+    @POST("getAllProductChangePromotion")
+    @FormUrlEncoded
+    Observable<ResponseProduct> getAllProductChangePromotion(@Field("user_id")int user_id);
 }

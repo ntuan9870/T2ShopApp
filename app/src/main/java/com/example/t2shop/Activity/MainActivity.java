@@ -27,10 +27,12 @@ import com.example.t2shop.Fragment.HomeFragment;
 import com.example.t2shop.Fragment.NotificationFragment;
 import com.example.t2shop.Fragment.PersonalFragment;
 import com.example.t2shop.Fragment.SearchFragment;
+import com.example.t2shop.Model.Product;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.Model.Voucher;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseAllVoucher;
+import com.example.t2shop.Response.ResponseProduct;
 import com.facebook.FacebookSdk;
 import com.google.android.material.tabs.TabLayout;
 
@@ -149,6 +151,40 @@ public class MainActivity extends AppCompatActivity{
                     @Override
                     public void accept(Throwable throwable) throws Exception {
 //                        Toast.makeText(getContext(), "Opp, lỗi kìa!", Toast.LENGTH_SHORT).show();
+                    }
+                }));
+        Common.compositeDisposable.add(Common.it2ShopAPI.getAllProduceReducePrice(user.getUser_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseProduct>() {
+                    @Override
+                    public void accept(ResponseProduct responseProduct) throws Exception {
+                        List<Product> productList = responseProduct.getProducts();
+                        for (int i = 0; i < productList.size(); i++){
+                            pushNotify("Sản phẩm " + productList.get(i).getProduct_name() + " vừa giảm giá!");
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+//                        Toast.makeText(getBaseContext(), "Opp, lỗi kìa!", Toast.LENGTH_SHORT).show();
+                    }
+                }));
+        Common.compositeDisposable.add(Common.it2ShopAPI.getAllProductChangePromotion(user.getUser_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseProduct>() {
+                    @Override
+                    public void accept(ResponseProduct responseProduct) throws Exception {
+                        List<Product> productList = responseProduct.getProducts();
+                        for (int i = 0; i < productList.size(); i++){
+                            pushNotify("Sản phẩm " + productList.get(i).getProduct_name() + " vừa được khuyến mãi!");
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+//                        Toast.makeText(getBaseContext(), "Opp, lỗi kìa!", Toast.LENGTH_SHORT).show();
                     }
                 }));
     }

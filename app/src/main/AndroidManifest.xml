@@ -19,7 +19,8 @@
         android:roundIcon="@drawable/t2shop"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.Light.NoActionBar"
-        tools:node="replace">
+        tools:node="replace"
+        android:usesCleartextTraffic="true">
         <activity android:name=".Activity.PaymentActivity"></activity>
         <activity android:name=".Activity.MappingActivity" />
         <activity android:name=".Activity.MoMoActivity">

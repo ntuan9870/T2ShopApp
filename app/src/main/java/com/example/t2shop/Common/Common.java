@@ -12,7 +12,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public class Common {
     public static IT2ShopAPI it2ShopAPI;
     public static CompositeDisposable compositeDisposable;
-    public static String idServer = "http://192.168.43.126/";
+    public static String idServer = "http://192.168.1.7/";
 
     public static IT2ShopAPI getAPI(){
         return RetrofitClient.getInstance().create(IT2ShopAPI.class);

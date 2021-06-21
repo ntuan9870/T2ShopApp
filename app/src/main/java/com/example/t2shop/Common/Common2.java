@@ -60,6 +60,7 @@ public class Common2 {
         pDialog.getProgressHelper().setBarColor(Color.parseColor("#A5DC86"));
         pDialog.setTitleText(message + " ...");
         pDialog.setCancelable(true);
+        pDialog.setCanceledOnTouchOutside(false);
         return pDialog;
     }
 

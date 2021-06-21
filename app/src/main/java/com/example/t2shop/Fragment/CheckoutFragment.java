@@ -114,6 +114,10 @@ public class CheckoutFragment extends Fragment {
         btn_buy = view.findViewById(R.id.btn_buy);
         img_momo = view.findViewById(R.id.img_momo);
         cb_momo = view.findViewById(R.id.cb_momo);
+        if (user!=null){
+            text_input_user_name.getEditText().setText(user.getUser_name());
+            text_input_phone_number.getEditText().setText(user.getUser_phone()+"");
+        }
         List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
         sum_price = 0;
         for (int i = 0; i < itemCarts.size(); i++){

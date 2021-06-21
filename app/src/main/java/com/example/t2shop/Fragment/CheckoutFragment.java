@@ -14,27 +14,23 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
-import com.example.t2shop.Activity.MainActivity;
 import com.example.t2shop.Activity.MoMoActivity;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
+import com.example.t2shop.Common.Constants;
 import com.example.t2shop.Common.RetrofitAPIAddress;
-import com.example.t2shop.Database.ItemCartDatabase;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
+import com.example.t2shop.Model.City;
 import com.example.t2shop.Model.District;
 import com.example.t2shop.Model.ItemCart;
 import com.example.t2shop.Model.User;
@@ -42,7 +38,6 @@ import com.example.t2shop.Model.Voucher;
 import com.example.t2shop.Model.Ward;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseAllVoucher;
-import com.example.t2shop.Response.ResponseCity;
 import com.example.t2shop.Response.ResponseMessage;
 import com.example.t2shop.Retrofit.AddressAPI;
 import com.google.android.material.textfield.TextInputEditText;
@@ -52,6 +47,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Currency;
@@ -85,11 +82,18 @@ public class CheckoutFragment extends Fragment {
     private User user;
     private ImageView img_momo;
     private CheckBox cb_momo;
+    public ArrayList<District> aDistrict = new ArrayList<>();
+    public ArrayList<Ward> aWard = new ArrayList<>();
+    public ArrayList<City> aCity = new ArrayList<>();
+    private City sl_city = new City();
+    private District sl_district = new District();
+    private Ward sl_ward = new Ward();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
+        getAllAddress();
         compositeDisposable = new CompositeDisposable();
         addressAPI = RetrofitAPIAddress.getAPI();
         View view = inflater.inflate(R.layout.fragment_check_out, container, false);
@@ -116,12 +120,22 @@ public class CheckoutFragment extends Fragment {
         cb_momo = view.findViewById(R.id.cb_momo);
         if (user!=null){
             text_input_user_name.getEditText().setText(user.getUser_name());
+<<<<<<< HEAD
             text_input_phone_number.getEditText().setText(user.getUser_phone()+"");
         }
         List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+=======
+            if(user.getUser_phone() == null){
+                text_input_phone_number.getEditText().setText("");
+            }else{
+                text_input_phone_number.getEditText().setText(user.getUser_phone()+"");
+            }
+        }
+        List<ItemCart> itemCarts = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getItems();
+>>>>>>> 327e9b7cc791e92861fed0625b168b1c78d657bd
         sum_price = 0;
         for (int i = 0; i < itemCarts.size(); i++){
-            sum_price += itemCarts.get(i).getProduct_price()*itemCarts.get(i).getAmount()*(100-Integer.parseInt(itemCarts.get(i).getPromotion_infor()))/100;
+            sum_price += itemCarts.get(i).getProduct_price()*itemCarts.get(i).getAmount()*(100-itemCarts.get(i).getPromotion_infor())/100;
         }
         DecimalFormat formatter = new DecimalFormat("###,###,###");
         String price = formatter.format(sum_price);
@@ -263,6 +277,20 @@ public class CheckoutFragment extends Fragment {
                             @Override
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 idSL = position-1;
+                                DecimalFormat formatter = new DecimalFormat("###,###,###");
+                                String price2 = "0";
+                                int tmpPrice = sum_price;
+                                price2 = formatter.format(tmpPrice);
+                                if(idSL>=0){
+                                    if(voucherList.get(idSL).getVoucher_value()!=0){
+                                        tmpPrice = sum_price - voucherList.get(idSL).getVoucher_value();
+                                        price2 = formatter.format(tmpPrice);
+                                    }else{
+                                        tmpPrice = sum_price - (sum_price*voucherList.get(idSL).getVoucher_discount())/100;
+                                        price2 = formatter.format(tmpPrice);
+                                    }
+                                }
+                                txt_sum_price_checkout.setText(price2 + " " +vnd);
                             }
 
                             @Override
@@ -289,7 +317,7 @@ public class CheckoutFragment extends Fragment {
                 if (validateName()&&validatePhone()&&validateAddress()&&validateCity()&&validateDistrict()&&validateWard()){
                     SweetAlertDialog dialogLoading = Common2.loadingDialog(getContext(), "Chờ chút..");
                     dialogLoading.show();
-                    List<ItemCart> itemCarts = ItemCartDatabase.getInstance(getContext()).itemCartDAO().getItems();
+                    List<ItemCart> itemCarts = T2ShopDatabase.getInstance(getContext()).itemCartDAO().getItems();
                     JSONArray jsonArray = new JSONArray();
                     for (int i = 0; i < itemCarts.size(); i++){
                         JSONObject myJsonObject = new JSONObject();
@@ -315,17 +343,17 @@ public class CheckoutFragment extends Fragment {
                     }
                     if (!cb_momo.isChecked()) {
                         String address = text_input_user_address.getEditText().getText().toString().trim() + " - " + text_input_user_address_ward.getEditText().getText().toString().trim() + " - "
-                                + text_input_user_address_ward.getEditText().getText().toString().trim() + " - " + text_input_user_address_city.getEditText().getText().toString();
+                                + text_input_user_address_district.getEditText().getText().toString().trim() + " - " + text_input_user_address_city.getEditText().getText().toString();
                         compositeDisposable.add(Common.it2ShopAPI.addOrder(jsonArray.toString(), user.getUser_id() + "", text_input_user_name.getEditText().getText().toString(),
                                 text_input_phone_number.getEditText().getText().toString(), "", address, sum_price + "", "Trực tiếp",
-                                voucher_id)
+                                voucher_id, Constants.store_id+"")
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Consumer<ResponseMessage>() {
                                     @Override
                                     public void accept(ResponseMessage responseMessage) throws Exception {
                                         dialogLoading.dismiss();
-                                        ItemCartDatabase.getInstance(getContext()).itemCartDAO().deleteAll();
+                                        T2ShopDatabase.getInstance(getContext()).itemCartDAO().deleteAll();
                                         AlertDialog.Builder mSuccess = new AlertDialog.Builder(getActivity());
                                         View mView = getLayoutInflater().inflate(R.layout.dialog_complete_checkout, null);
                                         Button btn_success = mView.findViewById(R.id.btn_success);
@@ -428,22 +456,32 @@ public class CheckoutFragment extends Fragment {
         AlertDialog.Builder mSLAddress = new AlertDialog.Builder(getActivity());
         View mView = getLayoutInflater().inflate(R.layout.dialog_sl_address, null);
         ListView lv_sl_address = mView.findViewById(R.id.lv_sl_address);
-        compositeDisposable.add(addressAPI.getAllCity()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<ResponseCity>() {
-                    @Override
-                    public void accept(ResponseCity responseCity) throws Exception {
-                        ArrayList<String> arrOptions = new ArrayList<>();
-                        for (int i = 0; i < responseCity.getLtsItem().size(); i++){
-                            arrOptions.add(responseCity.getLtsItem().get(i).getTitle());
-                            arrCity.add(responseCity.getLtsItem().get(i).getID());
-                        }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        lv_sl_address.setAdapter(adapter);
-                    }
-                }));
+//        compositeDisposable.add(addressAPI.getAllCity()
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<ResponseCity>() {
+//                    @Override
+//                    public void accept(ResponseCity responseCity) throws Exception {
+//                        ArrayList<String> arrOptions = new ArrayList<>();
+//                        for (int i = 0; i < responseCity.getLtsItem().size(); i++){
+//                            arrOptions.add(responseCity.getLtsItem().get(i).getTitle());
+//                            arrCity.add(responseCity.getLtsItem().get(i).getID());
+//                        }
+//                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
+//                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                        lv_sl_address.setAdapter(adapter);
+//                    }
+//                }));
+
+        ArrayList<String> arrOptions = new ArrayList<>();
+        for (int i = 0; i < aCity.size(); i++){
+            arrOptions.add(aCity.get(i).getName());
+//            arrCity.add(Integer.parseInt(aCity.get(i).getId()));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        lv_sl_address.setAdapter(adapter);
+
         mSLAddress.setView(mView);
         AlertDialog dialog = mSLAddress.create();
         dialog.show();
@@ -451,7 +489,8 @@ public class CheckoutFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 spinner_city.setText(lv_sl_address.getAdapter().getItem(position).toString());
-                idCity = arrCity.get(position);
+//                idCity = arrCity.get(position);
+                sl_city = aCity.get(position);
                 dialog.cancel();
             }
         });
@@ -460,27 +499,37 @@ public class CheckoutFragment extends Fragment {
         AlertDialog.Builder mSLAddress = new AlertDialog.Builder(getActivity());
         View mView = getLayoutInflater().inflate(R.layout.dialog_sl_address, null);
         ListView lv_sl_address = mView.findViewById(R.id.lv_sl_address);
-        compositeDisposable.add(addressAPI.getAllDistrictInCity(idCity)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<District>>() {
-                    @Override
-                    public void accept(List<District> responseDistrict) throws Exception {
-                        ArrayList<String> arrOptions = new ArrayList<>();
-                        for (int i = 0; i < responseDistrict.size(); i++) {
-                            arrOptions.add(responseDistrict.get(i).getTitle());
-                            arrDistrict.add(responseDistrict.get(i).getID());
-                        }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        lv_sl_address.setAdapter(adapter);
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        Toast.makeText(getContext(), ""+throwable.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }));
+//        compositeDisposable.add(addressAPI.getAllDistrictInCity(idCity)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<List<District>>() {
+//                    @Override
+//                    public void accept(List<District> responseDistrict) throws Exception {
+//                        ArrayList<String> arrOptions = new ArrayList<>();
+//                        for (int i = 0; i < responseDistrict.size(); i++) {
+//                            arrOptions.add(responseDistrict.get(i).getTitle());
+//                            arrDistrict.add(responseDistrict.get(i).getID());
+//                        }
+//                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
+//                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                        lv_sl_address.setAdapter(adapter);
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        Toast.makeText(getContext(), ""+throwable.getMessage(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }));
+
+        ArrayList<String> arrOptions = new ArrayList<>();
+        for (int i = 0; i < sl_city.getArrDistrict().size(); i++) {
+            arrOptions.add(sl_city.getArrDistrict().get(i).getName());
+//            arrDistrict.add(aDistrict.get(i).getId());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        lv_sl_address.setAdapter(adapter);
+
         mSLAddress.setView(mView);
         AlertDialog dialog = mSLAddress.create();
         dialog.show();
@@ -488,7 +537,8 @@ public class CheckoutFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 spinner_district.setText(lv_sl_address.getAdapter().getItem(position).toString());
-                idDistrict = arrDistrict.get(position);
+//                idDistrict = arrDistrict.get(position);
+                sl_district = sl_city.getArrDistrict().get(position);
                 dialog.cancel();
             }
         });
@@ -497,21 +547,30 @@ public class CheckoutFragment extends Fragment {
         AlertDialog.Builder mSLAddress = new AlertDialog.Builder(getActivity());
         View mView = getLayoutInflater().inflate(R.layout.dialog_sl_address, null);
         ListView lv_sl_address = mView.findViewById(R.id.lv_sl_address);
-        compositeDisposable.add(addressAPI.getAllWardInDistrict(idDistrict)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<Ward>>() {
-                    @Override
-                    public void accept(List<Ward> responseWard) throws Exception {
-                        ArrayList<String> arrOptions = new ArrayList<>();
-                        for (int i = 0; i < responseWard.size(); i++) {
-                            arrOptions.add(responseWard.get(i).getTitle());
-                        }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
-                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        lv_sl_address.setAdapter(adapter);
-                    }
-                }));
+//        compositeDisposable.add(addressAPI.getAllWardInDistrict(idDistrict)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<List<Ward>>() {
+//                    @Override
+//                    public void accept(List<Ward> responseWard) throws Exception {
+//                        ArrayList<String> arrOptions = new ArrayList<>();
+//                        for (int i = 0; i < responseWard.size(); i++) {
+//                            arrOptions.add(responseWard.get(i).getTitle());
+//                        }
+//                        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
+//                        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//                        lv_sl_address.setAdapter(adapter);
+//                    }
+//                }));
+
+        ArrayList<String> arrOptions = new ArrayList<>();
+        for (int i = 0; i < sl_district.getArrWards().size(); i++) {
+            arrOptions.add(sl_district.getArrWards().get(i).getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_dropdown_item, arrOptions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        lv_sl_address.setAdapter(adapter);
+
         mSLAddress.setView(mView);
         AlertDialog dialog = mSLAddress.create();
         dialog.show();
@@ -523,4 +582,60 @@ public class CheckoutFragment extends Fragment {
             }
         });
     }
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = getActivity().getAssets().open("local.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+
+    public void getAllAddress(){
+        try {
+            JSONArray jsonarray = new JSONArray(loadJSONFromAsset());
+            for (int i = 0; i < jsonarray.length(); i++) {
+                JSONObject jo_inside = jsonarray.getJSONObject(i);
+                City city = new City();
+                String city_id = jo_inside.getString("id");
+                String city_code = jo_inside.getString("code");
+                String city_name = jo_inside.getString("name");
+                city.setId(city_id);
+                city.setCode(city_code);
+                city.setName(city_name);
+                aDistrict = new ArrayList<>();
+                JSONArray jsonDistricts = jo_inside.getJSONArray("districts");
+                for (int j = 0; j < jsonDistricts.length(); j++) {
+                    JSONObject jo_inside_district = jsonDistricts.getJSONObject(j);
+                    District district = new District();
+                    district.setId(jo_inside_district.getString("id"));
+                    district.setName(jo_inside_district.getString("name"));
+                    JSONArray jsonWards = jo_inside_district.getJSONArray("wards");
+                    aWard = new ArrayList<>();
+                    for (int k = 0; k < jsonWards.length(); k++) {
+                        JSONObject jo_inside_ward = jsonWards.getJSONObject(k);
+                        Ward ward = new Ward();
+                        ward.setId(jo_inside_ward.getString("id"));
+                        ward.setName(jo_inside_ward.getString("name"));
+                        aWard.add(ward);
+                    }
+                    district.setArrWards(aWard);
+                    aDistrict.add(district);
+                }
+                city.setArrDistrict(aDistrict);
+                aCity.add(city);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.d("CCC", e.getMessage().toString());
+        }
+    }
+
 }

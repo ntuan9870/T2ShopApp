@@ -178,6 +178,21 @@
                             android:text="(17 đánh giá)"
                             android:textColor="#323232"
                             android:textSize="15sp" />
+                        <TextView
+                            android:id="@+id/txt_favorite_product"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Yêu thích: "
+                            android:textSize="15sp"
+                            android:layout_marginLeft="20dp" />
+                        <ImageView
+                            android:id="@+id/detail_favorite_product"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="20dp"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/ic_baseline_favorite_border_24"
+                            android:scaleType="fitXY"
+                            app:tint="#ff00"/>
                     </LinearLayout>
 
                     <LinearLayout

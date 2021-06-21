@@ -91,6 +91,28 @@
             android:textSize="11sp"
             android:textAllCaps="false"
             android:background="@drawable/bg_btn_use_voucher"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true" />
+        <TextView
+            android:id="@+id/txt_canceled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Đã hủy"
+            android:textSize="13sp"
+            android:textAllCaps="false"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btn_detail"
+            android:layout_marginRight="10dp"
+            android:visibility="invisible"
+            android:textColor="#ff00"/>
+        <Button
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hủy đơn hàng"
+            android:textSize="11sp"
+            android:textAllCaps="false"
+            android:background="@drawable/bg_btn_use_voucher"
+            android:layout_toLeftOf="@+id/btn_detail"
+            android:layout_marginRight="10dp"/>
     </RelativeLayout>
 </LinearLayout>

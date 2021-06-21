@@ -14,7 +14,7 @@ public class Promotion implements Serializable {
     private String promotion_name;
     private String start_date;
     private String end_date;
-    private String promotion_infor;
+    private int promotion_infor;
     private String promotion_status;
     private String created_at;
     private String updated_at;
@@ -22,7 +22,7 @@ public class Promotion implements Serializable {
     public Promotion() {
     }
 
-    public Promotion(int promotion_id, String promotion_name, String start_date, String end_date, String promotion_infor, String promotion_status, String created_at, String updated_at) {
+    public Promotion(int promotion_id, String promotion_name, String start_date, String end_date, int promotion_infor, String promotion_status, String created_at, String updated_at) {
         this.promotion_id = promotion_id;
         this.promotion_name = promotion_name;
         this.start_date = start_date;
@@ -65,11 +65,11 @@ public class Promotion implements Serializable {
         this.end_date = end_date;
     }
 
-    public String getPromotion_infor() {
+    public int getPromotion_infor() {
         return promotion_infor;
     }
 
-    public void setPromotion_infor(String promotion_infor) {
+    public void setPromotion_infor(int promotion_infor) {
         this.promotion_infor = promotion_infor;
     }
 

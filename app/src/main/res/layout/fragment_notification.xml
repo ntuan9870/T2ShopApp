@@ -32,26 +32,27 @@
             android:src="@drawable/ic_baseline_shopping_cart_24"
             app:tint="@color/white"/>
     </RelativeLayout>
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_notify"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="11">
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rc_vouchers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <TextView
-                android:layout_marginTop="50dp"
-                android:id="@+id/check_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Vui lòng đăng nhập!"
-                android:layout_centerInParent="true"
-                android:textColor="#001CBA"
-                android:textSize="15sp"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rc_vouchers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:layout_marginTop="50dp"
+                    android:id="@+id/check_notify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vui lòng đăng nhập!"
+                    android:layout_centerInParent="true"
+                    android:textColor="#001CBA"
+                    android:textSize="15sp"/>
         </RelativeLayout>
-    </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

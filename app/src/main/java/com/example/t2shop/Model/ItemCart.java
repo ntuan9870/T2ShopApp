@@ -15,13 +15,13 @@ public class ItemCart {
     private int product_amount;
     private String product_img;
     private String product_description;
-    private String promotion_infor;
+    private int promotion_infor;
     private int amount;
 
     public ItemCart() {
     }
 
-    public ItemCart(@NonNull Long id, int product_id, String product_name, double product_price, String product_img, String product_description, String promotion_infor, int amount) {
+    public ItemCart(@NonNull Long id, int product_id, String product_name, double product_price, String product_img, String product_description, int promotion_infor, int amount) {
         this.id = id;
         this.product_id = product_id;
         this.product_name = product_name;
@@ -73,11 +73,11 @@ public class ItemCart {
         this.product_description = product_description;
     }
 
-    public String getPromotion_infor() {
+    public int getPromotion_infor() {
         return promotion_infor;
     }
 
-    public void setPromotion_infor(String promotion_infor) {
+    public void setPromotion_infor(int promotion_infor) {
         this.promotion_infor = promotion_infor;
     }
 

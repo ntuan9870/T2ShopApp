@@ -15,12 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseMessage;
@@ -33,7 +32,7 @@ import io.reactivex.schedulers.Schedulers;
 public class ProfileFragment extends Fragment {
 
     public static String TAG = ProfileFragment.class.getName();
-    private TextInputLayout edt_username, edt_email, edt_phone_number;
+    private TextInputLayout edt_username, edt_email, edt_phone_number, edt_birth_day;
     private Button btn_confirm;
     private User user;
     private ImageView img_back;
@@ -41,7 +40,7 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         LinearLayout rl_root = view.findViewById(R.id.ln_root);
         rl_root.setOnClickListener(new View.OnClickListener() {
@@ -54,9 +53,11 @@ public class ProfileFragment extends Fragment {
         edt_email = view.findViewById(R.id.edt_email);
         img_back = view.findViewById(R.id.img_back);
         edt_phone_number = view.findViewById(R.id.edt_phone_number);
+        edt_birth_day = view.findViewById(R.id.edt_birth_day);
         edt_username.getEditText().setText(user.getUser_name());
         edt_phone_number.getEditText().setText(user.getUser_phone());
         edt_email.getEditText().setText(user.getUser_email());
+        edt_birth_day.getEditText().setText(user.getBirthday());
         btn_confirm = view.findViewById(R.id.btn_confirm);
         img_back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +110,8 @@ public class ProfileFragment extends Fragment {
                         loading.setCanceledOnTouchOutside(false);
                         loading.show();
                         Common.compositeDisposable.add(Common.it2ShopAPI.changeInformation(user.getUser_id(), edt_username.getEditText().getText().toString().trim(),
-                                edt_email.getEditText().getText().toString().trim(), edt_phone_number.getEditText().getText().toString().trim())
+                                edt_email.getEditText().getText().toString().trim(), edt_phone_number.getEditText().getText().toString().trim(),
+                                edt_birth_day.getEditText().getText().toString())
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .subscribe(new Consumer<ResponseMessage>() {
@@ -121,7 +123,8 @@ public class ProfileFragment extends Fragment {
                                             user.setUser_email(edt_email.getEditText().getText().toString().trim());
                                             user.setUser_name(edt_username.getEditText().getText().toString().trim());
                                             user.setUser_phone(edt_phone_number.getEditText().getText().toString().trim());
-                                            UserDatabase.getInstance(getContext()).userDAO().update(user);
+                                            user.setBirthday(edt_birth_day.getEditText().getText().toString().trim());
+                                            T2ShopDatabase.getInstance(getContext()).userDAO().update(user);
                                             Common2.showDialogAutoClose(getContext(), "Sửa đổi thông tin thành công!");
                                         }else{
                                             Common2.showDialogAutoClose(getContext(), "Không thành công!");
@@ -131,7 +134,7 @@ public class ProfileFragment extends Fragment {
                                 }, new Consumer<Throwable>() {
                                     @Override
                                     public void accept(Throwable throwable) throws Exception {
-                                        Common2.showDialogAutoClose(getContext(), "Lỗi kết nối!");
+                                        Common2.showDialogAutoClose(getContext(), "Lỗi kết nối!"+throwable.getMessage().toString());
                                         loading.dismiss();
                                     }
                                 }));
@@ -145,7 +148,8 @@ public class ProfileFragment extends Fragment {
     private boolean hasChange() {
         if (!user.getUser_name().equals(edt_username.getEditText().getText().toString().trim())
         ||!user.getUser_email().equals(edt_email.getEditText().getText().toString().trim())
-        ||!user.getUser_phone().equals(edt_phone_number.getEditText().getText().toString().trim())){
+        ||!user.getUser_phone().equals(edt_phone_number.getEditText().getText().toString().trim())
+                ||!user.getBirthday().equals(edt_birth_day.getEditText().getText().toString().trim())){
             return true;
         }
         return false;

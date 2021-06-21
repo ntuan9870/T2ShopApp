@@ -11,13 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.Comment;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseMessage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -32,7 +31,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
     public CommentAdapter(Context context, List<Comment> arrComment) {
         this.context = context;
         this.arrComment = arrComment;
-        this.user = UserDatabase.getInstance(context).userDAO().getItems();
+        this.user = T2ShopDatabase.getInstance(context).userDAO().getItems();
     }
 
     @NonNull

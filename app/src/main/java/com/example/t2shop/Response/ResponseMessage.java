@@ -2,12 +2,16 @@ package com.example.t2shop.Response;
 
 import com.example.t2shop.Model.User;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ResponseMessage {
     private String success;
     private String error;
     private String message;
     private String code;
     private User user;
+    private List<String> errors;
 
     public ResponseMessage() {
     }
@@ -50,5 +54,13 @@ public class ResponseMessage {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<String> getErrors() {
+        return errors;
+    }
+
+    public void setErrors(List<String> errors) {
+        this.errors = errors;
     }
 }

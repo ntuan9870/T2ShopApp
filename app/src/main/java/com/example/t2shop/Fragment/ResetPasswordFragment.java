@@ -16,29 +16,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Common2;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseMessage;
 import com.google.android.material.textfield.TextInputLayout;
-
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidParameterSpecException;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.EncryptedPrivateKeyInfo;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
@@ -106,7 +91,7 @@ public class ResetPasswordFragment extends Fragment {
                     Bundle bundle = getArguments();
                     String user_email = bundle.getString("user_email");
                     if (user_email==null){
-                        User user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+                        User user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
                         user_email = user.getUser_email();
                     }
                     Common.compositeDisposable.add(Common.it2ShopAPI.changePassword(edt_new_password.getEditText().getText().toString().trim(), user_email)

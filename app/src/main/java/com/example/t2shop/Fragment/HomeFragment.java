@@ -35,7 +35,9 @@ import com.example.t2shop.Adapter.BannerAdapter;
 import com.example.t2shop.Adapter.ProductAdapter;
 import com.example.t2shop.Common.Common;
 import com.example.t2shop.Common.Constants;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.Banner;
+import com.example.t2shop.Model.User;
 import com.example.t2shop.Response.ResponseProduct;
 import com.example.t2shop.R;
 import com.google.android.material.appbar.AppBarLayout;
@@ -63,10 +65,11 @@ public class HomeFragment extends Fragment {
     private AppBarLayout appBarLayout;
     Thread t1;
     private ArrayList<Bitmap> arrBmBanners = new ArrayList<>();
-    private RecyclerView rv_new_product, rv_featured_product;
+    private RecyclerView rv_new_product, rv_featured_product, rv_favorite_product, rv_recommend_product;
     private EditText edt_search;
-    private LinearLayout ln_search;
-    private ImageView img_shopping_cart;
+    private LinearLayout ln_search, rl_recommend_product, rl_favorite_product;
+    private ImageView img_shopping_cart, img_message;
+    private User user;
     @Override
     public void onStop() {
         Common.compositeDisposable.clear();
@@ -117,6 +120,11 @@ public class HomeFragment extends Fragment {
         edt_search = view.findViewById(R.id.edt_search);
         ln_search = view.findViewById(R.id.ln_search);
         img_shopping_cart = view.findViewById(R.id.img_shopping_cart);
+        img_message = view.findViewById(R.id.img_message);
+        rv_favorite_product = view.findViewById(R.id.rv_favorite_product);
+        rv_recommend_product = view.findViewById(R.id.rv_recommend_product);
+        rl_favorite_product = view.findViewById(R.id.rl_favorite_product);
+        rl_recommend_product = view.findViewById(R.id.rl_recommend_product);
         edt_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,12 +174,31 @@ public class HomeFragment extends Fragment {
         fetchBanner();
         fetchNewProduct();
         fetchFeatured();
+        user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
+        if (user!=null){
+            rl_favorite_product.setVisibility(View.VISIBLE);
+            rl_recommend_product.setVisibility(View.VISIBLE);
+            fetchFavorite();
+            fetchRecommend();
+        }else{
+            rl_favorite_product.setVisibility(View.INVISIBLE);
+            rl_recommend_product.setVisibility(View.INVISIBLE);
+        }
         refresh_home.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 if(Common.isConnectedToInternet(getContext())){
                     fetchNewProduct();
                     fetchFeatured();
+                    if (user!=null){
+                        rl_favorite_product.setVisibility(View.VISIBLE);
+                        rl_recommend_product.setVisibility(View.VISIBLE);
+                        fetchFavorite();
+                        fetchRecommend();
+                    }else{
+                        rl_favorite_product.setVisibility(View.INVISIBLE);
+                        rl_recommend_product.setVisibility(View.INVISIBLE);
+                    }
                     refresh_home.setRefreshing(false);
                 }else{
                     Toast.makeText(getContext(), "Vui lòng kết nối INTERNET và thử lại", Toast.LENGTH_SHORT).show();
@@ -186,6 +213,17 @@ public class HomeFragment extends Fragment {
                 transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
                 transaction.replace(R.id.main_frame, cartFragment);
                 transaction.addToBackStack(CartFragment.TAG);
+                transaction.commit();
+            }
+        });
+        img_message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = ((AppCompatActivity)getContext()).getSupportFragmentManager().beginTransaction();
+                ChatBotFragment chatBotFragment = new ChatBotFragment();
+                transaction.setCustomAnimations(R.anim.anim_fade_in, R.anim.anim_fade_out, R.anim.anim_fade_in, R.anim.anim_fade_out);
+                transaction.replace(R.id.main_frame, chatBotFragment);
+                transaction.addToBackStack(ChatBotFragment.TAG);
                 transaction.commit();
             }
         });
@@ -228,7 +266,40 @@ public class HomeFragment extends Fragment {
             }
         }));
     }
-
+    private void fetchRecommend() {
+        Common.compositeDisposable.add(Common.it2ShopAPI.getRecommendProduct(user.getUser_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseProduct>() {
+                    @Override
+                    public void accept(ResponseProduct responseProduct) throws Exception {
+                        ProductAdapter productAdapter = new ProductAdapter(getContext(), responseProduct.getProducts(), responseProduct.getPromotions(), responseProduct.getRatings());
+                        rv_recommend_product.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                        rv_recommend_product.setAdapter(productAdapter);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                    }
+                }));
+    }
+    private void fetchFavorite() {
+        Common.compositeDisposable.add(Common.it2ShopAPI.getFavoriteProduct(user.getUser_id())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseProduct>() {
+                    @Override
+                    public void accept(ResponseProduct responseProduct) throws Exception {
+                        ProductAdapter productAdapter = new ProductAdapter(getContext(), responseProduct.getProducts(), responseProduct.getPromotions(), responseProduct.getRatings());
+                        rv_favorite_product.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                        rv_favorite_product.setAdapter(productAdapter);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                    }
+                }));
+    }
 
     private void fetchBanner() {
         ArrayList<Banner> banners = new ArrayList<>();

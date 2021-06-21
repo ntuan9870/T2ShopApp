@@ -18,13 +18,29 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="10dp">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_marginTop="5dp"
+                android:id="@+id/spinner_select_store"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:errorEnabled="true">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/spinner_store"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Cửa hàng"
+                    android:drawableRight="@drawable/arrow_address"
+                    android:focusable="false" />
+            </com.google.android.material.textfield.TextInputLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rc_cart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layoutAnimation="@anim/layout_animation"
-                android:background="#E8E8E8"/>
+                android:background="#E8E8E8"
+                android:layout_below="@+id/spinner_select_store"/>
             <TextView
+                android:layout_below="@+id/spinner_select_store"
                 android:id="@+id/txt_nothing"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

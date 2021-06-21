@@ -2,7 +2,9 @@ package com.example.t2shop.Retrofit;
 
 import com.example.t2shop.Model.Category;
 import com.example.t2shop.Model.Comment;
+import com.example.t2shop.Response.ResponseChangeStore;
 import com.example.t2shop.Response.ResponseComment;
+import com.example.t2shop.Response.ResponseFavorite;
 import com.example.t2shop.Response.ResponseOrder;
 import com.example.t2shop.Response.ResponseOrderItem;
 import com.example.t2shop.Response.ResponseProduct;
@@ -11,11 +13,12 @@ import com.example.t2shop.Response.ResponseCategory;
 import com.example.t2shop.Response.ResponseLogin;
 import com.example.t2shop.Response.ResponseRatingAll;
 import com.example.t2shop.Response.ResponseMessage;
+import com.example.t2shop.Response.ResponseStore;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import retrofit2.Response;
+import okhttp3.Response;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -60,7 +63,8 @@ public interface IT2ShopAPI {
     @FormUrlEncoded
     Observable<ResponseMessage> addOrder(@Field("cart") String cart, @Field("user_id") String user_id, @Field("user_name_receive") String user_name_receive,
                                          @Field("user_phone") String user_phone, @Field("user_message") String user_message, @Field("user_address") String user_address,
-                                         @Field("total") String total, @Field("form") String form, @Field("select_voucher") String select_voucher);
+                                         @Field("total") String total, @Field("form") String form, @Field("select_voucher") String select_voucher,
+                                         @Field("store_id") String store_id);
     @GET("category/show")
     Observable<ResponseCategory> getAllCategory();
     @POST("category/getEdit")
@@ -78,9 +82,10 @@ public interface IT2ShopAPI {
     @POST("order/show/detail")
     @FormUrlEncoded
     Observable<ResponseOrderItem>  getDetailOrder(@Field("order_id") int order_id);
-    @POST("users/postEdit")
+    @POST("users/edit")
     @FormUrlEncoded
-    Observable<ResponseMessage> changeInformation(@Field("user_id") int user_id, @Field("user_name")String user_name, @Field("user_email") String user_email, @Field("user_phone") String user_phone);
+    Observable<ResponseMessage> changeInformation(@Field("user_id") int user_id, @Field("user_name")String user_name, @Field("user_email") String user_email, @Field("user_phone") String user_phone
+            , @Field("birthday") String birthday);
 
     @POST("auth/checksameemail")
     @FormUrlEncoded
@@ -94,4 +99,39 @@ public interface IT2ShopAPI {
     @POST("auth/getcode")
     @FormUrlEncoded
     Observable<ResponseMessage> getCode(@Field("email")String email);
+    @POST("getFavoriteProduct")
+    @FormUrlEncoded
+    Observable<ResponseProduct> getFavoriteProduct(@Field("user_id") int user_id);
+    @POST("recommened/getrecommened")
+    @FormUrlEncoded
+    Observable<ResponseProduct> getRecommendProduct(@Field("user_id") int user_id);
+    @POST("pushFavoriteProduct")
+    @FormUrlEncoded
+    Observable<ResponseMessage> addFavorite(@Field("user_id") int user_id, @Field("product_id") int product_id);
+    @POST("getFavorite")
+    @FormUrlEncoded
+    Observable<ResponseFavorite> getFavorite(@Field("user_id") int user_id, @Field("product_id") int product_id);
+    @POST("removeFavoriteProduct")
+    @FormUrlEncoded
+    Observable<ResponseMessage> removeFavorite(@Field("FP_id") int FP_id);
+    @POST("recommened/add")
+    @FormUrlEncoded
+    Observable<ResponseMessage> addRecommend(@Field("user_id") int user_id, @Field("product_id") String product_id);
+    @POST("checkAcceptComment")
+    @FormUrlEncoded
+    Observable<ResponseOrder> checkAllowRating(@Field("user_id") int user_id, @Field("product_id") int product_id);
+    @GET("store/showStore")
+    Observable<ResponseStore> getAllStore();
+    @POST("cart/checkChangeStore")
+    @FormUrlEncoded
+    Observable<ResponseChangeStore> checkChangeStore(@Field("cart") String json_cart, @Field("store_id") int store_id);
+    @POST("order/show/remove")
+    @FormUrlEncoded
+    Observable<ResponseMessage> removeOrder(@Field("order_id") int order_id);
+    @POST("getAllProduceReducePrice")
+    @FormUrlEncoded
+    Observable<ResponseProduct> getAllProduceReducePrice(@Field("user_id")int user_id);
+    @POST("getAllProductChangePromotion")
+    @FormUrlEncoded
+    Observable<ResponseProduct> getAllProductChangePromotion(@Field("user_id")int user_id);
 }

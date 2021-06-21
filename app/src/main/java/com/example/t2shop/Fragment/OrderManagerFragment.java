@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -17,7 +16,7 @@ import android.widget.Toast;
 
 import com.example.t2shop.Adapter.OrderAdapter;
 import com.example.t2shop.Common.Common;
-import com.example.t2shop.Database.UserDatabase;
+import com.example.t2shop.Database.T2ShopDatabase;
 import com.example.t2shop.Model.User;
 import com.example.t2shop.R;
 import com.example.t2shop.Response.ResponseOrder;
@@ -55,7 +54,7 @@ public class OrderManagerFragment extends Fragment {
                 getFragmentManager().popBackStack();
             }
         });
-        User user = UserDatabase.getInstance(getContext()).userDAO().getItems();
+        User user = T2ShopDatabase.getInstance(getContext()).userDAO().getItems();
         Common.compositeDisposable.add(Common.it2ShopAPI.getAllOrderByUserId(user.getUser_id())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())

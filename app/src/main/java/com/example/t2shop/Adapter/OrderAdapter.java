@@ -14,17 +14,26 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.example.t2shop.Common.Common;
+import com.example.t2shop.Common.Common2;
 import com.example.t2shop.Fragment.DetailOrderFragment;
 import com.example.t2shop.Fragment.DetailProductFragment;
 import com.example.t2shop.Model.Order;
 import com.example.t2shop.R;
+import com.example.t2shop.Response.ResponseMessage;
+import com.example.t2shop.Response.ResponseProduct;
 
 import org.w3c.dom.Text;
 
 import java.text.DecimalFormat;
 import java.util.Currency;
 import java.util.List;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> {
     private Context context;
@@ -71,6 +80,13 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             holder.img_form.setImageResource(R.drawable.ic_baseline_credit_card_24);
             holder.img_form.setColorFilter(0xFFFF0000);
         }
+        if(o.getStatus().equals("2")){
+            holder.txt_canceled.setVisibility(View.VISIBLE);
+            holder.btn_cancel.setVisibility(View.INVISIBLE);
+        }else{
+            holder.txt_canceled.setVisibility(View.INVISIBLE);
+            holder.btn_cancel.setVisibility(View.VISIBLE);
+        }
         holder.btn_detail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +101,35 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
                 fragmentTransaction.commit();
             }
         });
+        holder.btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(o.getStatus().equals("1")){
+                    Common2.showDialogAutoClose(context, "Bạn không thể hủy đơn hàng đang được giao!");
+                }else{
+                    Common.compositeDisposable.add(Common.it2ShopAPI.removeOrder(o.getOrder_id())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(new Consumer<ResponseMessage>() {
+                                @Override
+                                public void accept(ResponseMessage responseMessage) throws Exception {
+                                    if (responseMessage!=null){
+                                        if(responseMessage.getMessage().equals("success")){
+                                            notifyDataSetChanged();
+                                            Common2.showDialogAutoClose(context, "Hủy đơn hàng thành công!");
+                                        }else{
+                                            Common2.showDialogAutoClose(context, "Đã xảy ra lỗi!");
+                                        }
+                                    }
+                                }
+                            }, new Consumer<Throwable>() {
+                                @Override
+                                public void accept(Throwable throwable) throws Exception {
+                                }
+                            }));
+                }
+            }
+        });
     }
 
     @Override
@@ -93,9 +138,9 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView txt_id_order, txt_date_order, txt_name_order, txt_amount_order;
+        private TextView txt_id_order, txt_date_order, txt_name_order, txt_amount_order, txt_canceled;
         private ImageView img_ready, img_status, img_form;
-        private Button btn_detail;
+        private Button btn_detail, btn_cancel;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             txt_id_order = itemView.findViewById(R.id.txt_id_order);
@@ -106,6 +151,8 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ViewHolder> 
             img_status = itemView.findViewById(R.id.img_status);
             img_form = itemView.findViewById(R.id.img_form);
             btn_detail = itemView.findViewById(R.id.btn_detail);
+            btn_cancel = itemView.findViewById(R.id.btn_cancel);
+            txt_canceled = itemView.findViewById(R.id.txt_canceled);
         }
     }
 }

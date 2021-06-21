@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,7 +48,7 @@ public class RegisterFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_register, container, false);
-        NestedScrollView scroll_register = view.findViewById(R.id.scroll_register);
+        scroll_register = view.findViewById(R.id.scroll_register);
         scroll_register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,7 +63,6 @@ public class RegisterFragment extends Fragment {
         txt_user_register = view.findViewById(R.id.txt_user_register);
         ln_t2shop = view.findViewById(R.id.ln_t2shop);
         ln_register = view.findViewById(R.id.ln_register);
-        scroll_register = view.findViewById(R.id.scroll_register);
         img_close_register = view.findViewById(R.id.img_close_register);
 
         getActivity().getWindow().setSoftInputMode(
@@ -186,16 +186,22 @@ public class RegisterFragment extends Fragment {
                             .subscribe(new Consumer<ResponseMessage>() {
                         @Override
                         public void accept(ResponseMessage responseMessage) throws Exception {
-                            if (responseMessage.getSuccess().equals("Đăng ký thành công!")){
+                            if (responseMessage.getSuccess()!=null){
                                 Toast.makeText(getContext(), "Đăng ký thành công!", Toast.LENGTH_SHORT).show();
                                 closeKey();
                                 getFragmentManager().popBackStack();
+                            }else{
+                                if(responseMessage.getErrors().size() == 1){
+                                    txt_email_register.setError("Email đã tồn tại!");
+                                    Toast.makeText(getContext(), "Email đã tồn tại!", Toast.LENGTH_SHORT).show();
+                                }
                             }
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
-                            Toast.makeText(getContext(), "Vui lòng kiểm tra kết nối INTERNET!"+throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Vui lòng kiểm tra kết nối INTERNET!", Toast.LENGTH_SHORT).show();
+                            Log.d("AHS", throwable.getMessage().toString());
                         }
                     }));
                 }
@@ -212,6 +218,10 @@ public class RegisterFragment extends Fragment {
 
     private boolean validateUserName() {
         String userNameInput = txt_user_register.getEditText().getText().toString().trim();
+        if (userNameInput.isEmpty()){
+            txt_user_register.setError("Tên hiển thị không được trống!");
+            return false;
+        }
         if (userNameInput.length()>15){
             txt_user_register.setError("Tên hiển thị quá dài!");
             return false;

@@ -62,7 +62,7 @@ public class DetailOrderFragment extends Fragment {
         Currency currency = Currency.getInstance("VND");
         String vnd = currency.getSymbol();
         txt_total_price.setText(price + " " +vnd);
-        Common.compositeDisposable.add(Common.it2ShopAPI.getDetailOrder(132)
+        Common.compositeDisposable.add(Common.it2ShopAPI.getDetailOrder(order.getOrder_id())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(new Consumer<ResponseOrderItem>() {

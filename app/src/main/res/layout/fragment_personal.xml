@@ -222,6 +222,72 @@
                         android:layout_marginRight="10dp"
                         android:layout_gravity="center_vertical"/>
                 </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ln_voucher_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="15"
+                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:paddingLeft="10dp">
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:src="@drawable/ic_baseline_card_giftcard_24"
+                        app:tint="@color/black"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="11"
+                        android:text="Voucher của bạn"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center_vertical"/>
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="15dp"
+                        android:layout_weight="2"
+                        android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+                        android:layout_marginRight="10dp"
+                        android:layout_gravity="center_vertical"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ln_message_profile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="15"
+                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:paddingLeft="10dp">
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:src="@drawable/ic_baseline_message_24"
+                        app:tint="@color/black"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="11"
+                        android:text="Tin nhắn cho bạn"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
+                        android:layout_gravity="center_vertical"/>
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="15dp"
+                        android:layout_weight="2"
+                        android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+                        android:layout_marginRight="10dp"
+                        android:layout_gravity="center_vertical"/>
+                </LinearLayout>
             </LinearLayout>
             <RelativeLayout
                 android:id="@+id/rl_log_out"
